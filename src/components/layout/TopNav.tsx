@@ -57,8 +57,12 @@ export function TopNav() {
           {/* Left: Country/Flag */}
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-              <button className="flex items-center gap-2 text-sm hover:opacity-80 transition-opacity">
-                <span className="text-lg">{locale.flag}</span>
+              <button className="flex items-center gap-1.5 text-sm hover:opacity-80 transition-opacity">
+                <img 
+                  src={`https://flagcdn.com/w40/${market.toLowerCase()}.png`}
+                  alt={locale.nativeLabel}
+                  className="h-4 w-6 object-cover rounded-sm"
+                />
                 <span className="font-medium">{market}</span>
               </button>
             </DialogTrigger>
