@@ -188,22 +188,15 @@ const CaseDetailPage = () => {
               <CardTitle className="text-base">Case Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {caseData.eventId && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Event ID:</span>
-                  <span className="font-mono">{caseData.eventId}</span>
+              {caseData.eventName && (
+                <div className="text-sm">
+                  <span className="text-muted-foreground">Event:</span>
+                  <p className="font-medium mt-0.5">{caseData.eventName}</p>
                 </div>
               )}
-              <div className="flex items-center gap-2 text-sm">
-                <Building2 className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Partner:</span>
-                <span>{caseData.company}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <MapPin className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Market:</span>
-                <span className="uppercase">{caseData.market}</span>
+              <div className="text-sm">
+                <span className="text-muted-foreground">Venue:</span>
+                <p className="font-medium mt-0.5">{caseData.venuePartnerId?.replace('VEN-', '')}</p>
               </div>
               
               {caseData.attachments.length > 0 && (
