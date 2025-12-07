@@ -12,29 +12,25 @@ import {
   CATEGORY_OPTIONS, 
   SUBCATEGORY_OPTIONS, 
   URGENCY_OPTIONS,
-  TRIED_SOLUTIONS_OPTIONS,
   RequestCategory,
   Urgency
 } from '@/lib/types';
 import { mockKnowledgeArticles, mockEvents, currentUser } from '@/lib/mockData';
 import { useLocale } from '@/contexts/LocaleContext';
-import { AlertTriangle, Upload, X, CheckCircle2, Calendar } from 'lucide-react';
+import { AlertTriangle, Upload, X, CheckCircle2, Calendar, ChevronRight, HelpCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 
 const NewCasePage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { market, locale } = useLocale();
+  const { locale } = useLocale();
   
   const [category, setCategory] = useState<RequestCategory | ''>('');
   const [subCategory, setSubCategory] = useState('');
   const [selectedEventId, setSelectedEventId] = useState('');
-  const [venuePartnerId, setVenuePartnerId] = useState('VEN-001');
   const [urgency, setUrgency] = useState<Urgency | ''>('');
   const [description, setDescription] = useState('');
-  const [triedSolutions, setTriedSolutions] = useState<string[]>([]);
-  const [otherSolution, setOtherSolution] = useState('');
   const [reviewedArticles, setReviewedArticles] = useState(false);
   const [attachments, setAttachments] = useState<File[]>([]);
 
@@ -46,15 +42,18 @@ const NewCasePage = () => {
   const selectedEvent = mockEvents.find(e => e.id === selectedEventId);
 
   const recommendedArticles = useMemo(() => {
-    if (!category) return [];
-    // In a real app, this would be an API call based on category/subCategory
+    if (!category || !subCategory) return [];
     return mockKnowledgeArticles.slice(0, 3);
   }, [category, subCategory]);
 
   const isHighUrgency = urgency === 'critical' || urgency === 'high';
 
-  const canSubmit = category && subCategory && urgency && description.trim().length >= 20 && 
-    (recommendedArticles.length === 0 || reviewedArticles);
+  // Step logic
+  const showStep2 = !!category;
+  const showArticleGate = !!category && !!subCategory && recommendedArticles.length > 0;
+  const showStep3 = showArticleGate ? reviewedArticles : (!!category && !!subCategory);
+
+  const canSubmit = category && subCategory && urgency && description.trim().length >= 20;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -76,7 +75,6 @@ const NewCasePage = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // In a real app, this would submit to an API
     toast({
       title: "Case Submitted",
       description: "Your support request has been created successfully. Case number: TM-2024-00006",
@@ -85,27 +83,34 @@ const NewCasePage = () => {
     navigate('/cases');
   };
 
+  const getCategoryLabel = () => {
+    const cat = CATEGORY_OPTIONS.find(c => c.value === category);
+    return cat?.label || '';
+  };
+
   return (
     <MainLayout title="New Support Request" showSearch={false}>
-      <form onSubmit={handleSubmit} className="max-w-4xl">
+      <form onSubmit={handleSubmit} className="max-w-5xl">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Form */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4">
+            
+            {/* Step 1: What can we help with? */}
             <Card className="border-2 border-border bg-card">
-              <CardHeader>
-                <CardTitle>Request Details</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Category */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="category">Request Category *</Label>
+              <CardContent className="pt-6 space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">
+                    1
+                  </div>
+                  <div className="flex-1 space-y-3">
+                    <h2 className="text-lg font-semibold">What can we help you with?</h2>
                     <Select value={category} onValueChange={(v) => {
                       setCategory(v as RequestCategory);
                       setSubCategory('');
+                      setReviewedArticles(false);
                     }}>
-                      <SelectTrigger id="category" className="border-2">
-                        <SelectValue placeholder="Select category" />
+                      <SelectTrigger className="border-2 w-full max-w-md">
+                        <SelectValue placeholder="Select a topic..." />
                       </SelectTrigger>
                       <SelectContent className="bg-popover">
                         {CATEGORY_OPTIONS.map((option) => (
@@ -116,298 +121,293 @@ const NewCasePage = () => {
                       </SelectContent>
                     </Select>
                   </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="subCategory">Sub-Category *</Label>
-                    <Select value={subCategory} onValueChange={setSubCategory} disabled={!category}>
-                      <SelectTrigger id="subCategory" className="border-2">
-                        <SelectValue placeholder="Select sub-category" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        {subCategoryOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* Event Selection */}
-                <div className="space-y-2">
-                  <Label htmlFor="event">Related Event (optional)</Label>
-                  <Select value={selectedEventId} onValueChange={setSelectedEventId}>
-                    <SelectTrigger id="event" className="border-2">
-                      <SelectValue placeholder="Select an event" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover max-h-80">
-                      {upcomingEvents.length > 0 && (
-                        <>
-                          <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground bg-secondary">
-                            Upcoming Events
-                          </div>
-                          {upcomingEvents.map((event) => (
-                            <SelectItem key={event.id} value={event.id}>
-                              <div className="flex items-center gap-2">
-                                <Calendar className="h-3.5 w-3.5 text-primary" />
-                                <span>{event.name}</span>
-                                <span className="text-muted-foreground text-xs">
-                                  ({format(event.date, 'MMM d, yyyy')})
-                                </span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </>
-                      )}
-                      {pastEvents.length > 0 && (
-                        <>
-                          <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground bg-secondary">
-                            Past Events
-                          </div>
-                          {pastEvents.map((event) => (
-                            <SelectItem key={event.id} value={event.id}>
-                              <div className="flex items-center gap-2">
-                                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                                <span>{event.name}</span>
-                                <span className="text-muted-foreground text-xs">
-                                  ({format(event.date, 'MMM d, yyyy')})
-                                </span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </>
-                      )}
-                    </SelectContent>
-                  </Select>
-                  {selectedEvent && (
-                    <p className="text-xs text-muted-foreground">
-                      {selectedEvent.venue} • {format(selectedEvent.date, 'EEEE, MMMM d, yyyy h:mm a')}
-                    </p>
-                  )}
-                </div>
-
-                {/* Market & Urgency */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Market / Country</Label>
-                    <div className="p-3 bg-secondary border-2 border-border text-sm">
-                      {locale.flag} {locale.label}
-                      <span className="text-xs text-muted-foreground ml-2">
-                        (Change in header)
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="urgency">Urgency / Impact *</Label>
-                    <Select value={urgency} onValueChange={(v) => setUrgency(v as Urgency)}>
-                      <SelectTrigger id="urgency" className="border-2">
-                        <SelectValue placeholder="Select urgency" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover">
-                        {URGENCY_OPTIONS.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* Urgency Alert */}
-                {isHighUrgency && (
-                  <div className="flex items-start gap-3 p-4 bg-warning/10 border-2 border-warning">
-                    <AlertTriangle className="h-5 w-5 text-warning shrink-0" />
-                    <div>
-                      <p className="font-semibold text-foreground">High-Priority Case</p>
-                      <p className="text-sm text-muted-foreground">
-                        Because this is high-urgency, your request will be escalated to the Event-Day Support queue with expedited SLA.
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Description */}
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description * (min. 20 characters)</Label>
-                  <Textarea
-                    id="description"
-                    placeholder="Please describe your issue in detail..."
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value.slice(0, 500))}
-                    className="border-2 min-h-32"
-                  />
-                  <p className="text-xs text-muted-foreground text-right">
-                    {description.length}/500 characters
-                  </p>
-                </div>
-
-                {/* What have you tried */}
-                <div className="space-y-3">
-                  <Label>What have you tried so far?</Label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {TRIED_SOLUTIONS_OPTIONS.map((option) => (
-                      <label
-                        key={option.value}
-                        className="flex items-center gap-3 p-3 border-2 border-border bg-background cursor-pointer hover:border-primary transition-colors"
-                      >
-                        <Checkbox
-                          checked={triedSolutions.includes(option.value)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setTriedSolutions([...triedSolutions, option.value]);
-                            } else {
-                              setTriedSolutions(triedSolutions.filter(s => s !== option.value));
-                            }
-                          }}
-                        />
-                        <span className="text-sm">{option.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                  {triedSolutions.includes('other') && (
-                    <Textarea
-                      placeholder="Please describe what else you tried..."
-                      value={otherSolution}
-                      onChange={(e) => setOtherSolution(e.target.value)}
-                      className="border-2"
-                    />
-                  )}
-                </div>
-
-                {/* Attachments */}
-                <div className="space-y-3">
-                  <Label>Attachments (optional, max 5 files)</Label>
-                  <div className="border-2 border-dashed border-border p-6 text-center">
-                    <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Drop files here or click to upload
-                    </p>
-                    <input
-                      type="file"
-                      multiple
-                      onChange={handleFileChange}
-                      className="hidden"
-                      id="file-upload"
-                      accept=".pdf,.png,.jpg,.jpeg,.log,.txt,.zip"
-                    />
-                    <Button type="button" variant="outline" size="sm" asChild>
-                      <label htmlFor="file-upload" className="cursor-pointer">
-                        Choose Files
-                      </label>
-                    </Button>
-                  </div>
-                  
-                  {attachments.length > 0 && (
-                    <div className="space-y-2">
-                      {attachments.map((file, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 bg-secondary">
-                          <span className="text-sm truncate">{file.name}</span>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeAttachment(index)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </div>
               </CardContent>
             </Card>
 
-            {/* Contact Info */}
-            <Card className="border-2 border-border bg-card">
-              <CardHeader>
-                <CardTitle>Contact Information</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <Label className="text-muted-foreground">Name</Label>
-                    <p className="font-medium">{currentUser.name}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-muted-foreground">Email</Label>
-                    <p className="font-medium">{currentUser.email}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-muted-foreground">Partner ID</Label>
-                    <p className="font-medium">{currentUser.partnerId}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-muted-foreground">Role</Label>
-                    <p className="font-medium">{currentUser.role}</p>
-                  </div>
-                  <div className="space-y-1 sm:col-span-2">
-                    <Label className="text-muted-foreground">Company</Label>
-                    <p className="font-medium">{currentUser.company}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Submit */}
-            <div className="flex gap-4">
-              <Button type="submit" size="lg" disabled={!canSubmit}>
-                Submit Request
-              </Button>
-              <Button type="button" variant="outline" size="lg" onClick={() => navigate('/cases')}>
-                Cancel
-              </Button>
-            </div>
-          </div>
-
-          {/* Sidebar - Recommended Articles */}
-          <div className="space-y-4">
-            {category && recommendedArticles.length > 0 && (
-              <Card className="border-2 border-primary bg-accent/30">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <span className="text-primary">💡</span>
-                    Suggested Resources
-                  </CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    Review these articles before submitting your request.
-                  </p>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {recommendedArticles.map((article) => (
-                    <ArticleCard key={article.id} article={article} compact />
-                  ))}
-                  
-                  <label className="flex items-start gap-3 p-3 bg-background border-2 border-border cursor-pointer hover:border-primary transition-colors">
-                    <Checkbox
-                      checked={reviewedArticles}
-                      onCheckedChange={(checked) => setReviewedArticles(!!checked)}
-                      className="mt-0.5"
-                    />
-                    <span className="text-sm">
-                      I reviewed these resources and my issue persists
-                    </span>
-                  </label>
-
-                  {reviewedArticles && (
-                    <div className="flex items-center gap-2 text-success text-sm">
-                      <CheckCircle2 className="h-4 w-4" />
-                      Great! You can now submit your request.
+            {/* Step 2: Narrow it down */}
+            {showStep2 && (
+              <Card className="border-2 border-border bg-card animate-in fade-in slide-in-from-top-2 duration-300">
+                <CardContent className="pt-6 space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">
+                      2
                     </div>
-                  )}
+                    <div className="flex-1 space-y-3">
+                      <h2 className="text-lg font-semibold">What specifically do you need help with?</h2>
+                      <Select value={subCategory} onValueChange={(v) => {
+                        setSubCategory(v);
+                        setReviewedArticles(false);
+                      }}>
+                        <SelectTrigger className="border-2 w-full max-w-md">
+                          <SelectValue placeholder="Select an issue type..." />
+                        </SelectTrigger>
+                        <SelectContent className="bg-popover">
+                          {subCategoryOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             )}
 
+            {/* Article Gate - Before moving forward */}
+            {showArticleGate && !reviewedArticles && (
+              <Card className="border-2 border-primary bg-primary/5 animate-in fade-in slide-in-from-top-2 duration-300">
+                <CardContent className="pt-6 space-y-4">
+                  <div className="flex items-start gap-3">
+                    <HelpCircle className="h-6 w-6 text-primary shrink-0 mt-0.5" />
+                    <div className="flex-1 space-y-4">
+                      <div>
+                        <h2 className="text-lg font-semibold">Before moving forward with your {getCategoryLabel().toLowerCase()} request</h2>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Have you reviewed and/or completed the following?
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        {recommendedArticles.map((article) => (
+                          <ArticleCard key={article.id} article={article} compact />
+                        ))}
+                      </div>
+
+                      <label className="flex items-center gap-3 p-3 bg-background border-2 border-border cursor-pointer hover:border-primary transition-colors">
+                        <Checkbox
+                          checked={reviewedArticles}
+                          onCheckedChange={(checked) => setReviewedArticles(!!checked)}
+                        />
+                        <span className="text-sm font-medium">
+                          Yes, I've reviewed these resources and still need help
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Reviewed confirmation */}
+            {showArticleGate && reviewedArticles && (
+              <div className="flex items-center gap-2 text-success text-sm px-2 animate-in fade-in duration-200">
+                <CheckCircle2 className="h-4 w-4" />
+                Resources reviewed — let's continue with your request.
+              </div>
+            )}
+
+            {/* Step 3: Tell us more */}
+            {showStep3 && (
+              <Card className="border-2 border-border bg-card animate-in fade-in slide-in-from-top-2 duration-300">
+                <CardContent className="pt-6 space-y-5">
+                  <div className="flex items-start gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">
+                      3
+                    </div>
+                    <div className="flex-1 space-y-5">
+                      <h2 className="text-lg font-semibold">Tell us about your issue</h2>
+                      
+                      {/* Description */}
+                      <div className="space-y-2">
+                        <Textarea
+                          placeholder="Describe what's happening, what you expected, and any error messages you've seen..."
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value.slice(0, 500))}
+                          className="border-2 min-h-28"
+                        />
+                        <p className="text-xs text-muted-foreground text-right">
+                          {description.length}/500 characters {description.length < 20 && description.length > 0 && '(min 20)'}
+                        </p>
+                      </div>
+
+                      {/* Event & Urgency in one row */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label className="text-sm text-muted-foreground">Related event (optional)</Label>
+                          <Select value={selectedEventId} onValueChange={setSelectedEventId}>
+                            <SelectTrigger className="border-2">
+                              <SelectValue placeholder="Select an event" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-popover max-h-60">
+                              {upcomingEvents.length > 0 && (
+                                <>
+                                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground bg-secondary">
+                                    Upcoming
+                                  </div>
+                                  {upcomingEvents.map((event) => (
+                                    <SelectItem key={event.id} value={event.id}>
+                                      <div className="flex items-center gap-2">
+                                        <Calendar className="h-3.5 w-3.5 text-primary" />
+                                        <span className="truncate">{event.name}</span>
+                                      </div>
+                                    </SelectItem>
+                                  ))}
+                                </>
+                              )}
+                              {pastEvents.length > 0 && (
+                                <>
+                                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground bg-secondary">
+                                    Past
+                                  </div>
+                                  {pastEvents.map((event) => (
+                                    <SelectItem key={event.id} value={event.id}>
+                                      <div className="flex items-center gap-2">
+                                        <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                                        <span className="truncate">{event.name}</span>
+                                      </div>
+                                    </SelectItem>
+                                  ))}
+                                </>
+                              )}
+                            </SelectContent>
+                          </Select>
+                          {selectedEvent && (
+                            <p className="text-xs text-muted-foreground">
+                              {format(selectedEvent.date, 'MMM d, yyyy')} • {selectedEvent.venue}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-sm text-muted-foreground">How urgent is this?</Label>
+                          <Select value={urgency} onValueChange={(v) => setUrgency(v as Urgency)}>
+                            <SelectTrigger className="border-2">
+                              <SelectValue placeholder="Select urgency" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-popover">
+                              {URGENCY_OPTIONS.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      {/* Urgency Alert */}
+                      {isHighUrgency && (
+                        <div className="flex items-start gap-3 p-3 bg-warning/10 border-2 border-warning">
+                          <AlertTriangle className="h-5 w-5 text-warning shrink-0" />
+                          <div>
+                            <p className="font-semibold text-sm">High-Priority Case</p>
+                            <p className="text-xs text-muted-foreground">
+                              This will be escalated to Event-Day Support with expedited SLA.
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Attachments */}
+                      <div className="space-y-2">
+                        <Label className="text-sm text-muted-foreground">Attachments (optional)</Label>
+                        <div className="border-2 border-dashed border-border p-4 text-center">
+                          <input
+                            type="file"
+                            multiple
+                            onChange={handleFileChange}
+                            className="hidden"
+                            id="file-upload"
+                            accept=".pdf,.png,.jpg,.jpeg,.log,.txt,.zip"
+                          />
+                          <Button type="button" variant="outline" size="sm" asChild>
+                            <label htmlFor="file-upload" className="cursor-pointer flex items-center gap-2">
+                              <Upload className="h-4 w-4" />
+                              Add files
+                            </label>
+                          </Button>
+                          <p className="text-xs text-muted-foreground mt-1">Max 5 files</p>
+                        </div>
+                        
+                        {attachments.length > 0 && (
+                          <div className="space-y-1">
+                            {attachments.map((file, index) => (
+                              <div key={index} className="flex items-center justify-between p-2 bg-secondary text-sm">
+                                <span className="truncate">{file.name}</span>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => removeAttachment(index)}
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Submit section */}
+            {showStep3 && (
+              <div className="flex items-center gap-4 pt-2 animate-in fade-in duration-300">
+                <Button type="submit" size="lg" disabled={!canSubmit} className="gap-2">
+                  Submit Request
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+                <Button type="button" variant="ghost" onClick={() => navigate('/cases')}>
+                  Cancel
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-4">
+            {/* Contact Info - always visible */}
+            <Card className="border-2 border-border bg-card">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Your Contact Info</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                <div>
+                  <span className="text-muted-foreground">Name:</span>{' '}
+                  <span className="font-medium">{currentUser.name}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Email:</span>{' '}
+                  <span className="font-medium">{currentUser.email}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Company:</span>{' '}
+                  <span className="font-medium">{currentUser.company}</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Market:</span>{' '}
+                  <span className="font-medium">{locale.flag} {locale.label}</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Helpful hint when no category selected */}
             {!category && (
-              <Card className="border-2 border-border bg-card">
-                <CardContent className="p-6 text-center text-muted-foreground">
-                  <p className="text-sm">
-                    Select a category to see relevant knowledge base articles that might help resolve your issue.
+              <Card className="border-2 border-border bg-secondary/50">
+                <CardContent className="p-4 text-center">
+                  <p className="text-sm text-muted-foreground">
+                    Start by selecting a topic and we'll guide you through the rest.
                   </p>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Show recommended articles in sidebar after gate is passed */}
+            {showStep3 && recommendedArticles.length > 0 && (
+              <Card className="border-2 border-border bg-card">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">Related Resources</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {recommendedArticles.map((article) => (
+                    <ArticleCard key={article.id} article={article} compact />
+                  ))}
                 </CardContent>
               </Card>
             )}
