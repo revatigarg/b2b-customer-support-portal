@@ -78,13 +78,43 @@ export const taskTiles: TaskTile[] = [
     href: '/knowledge?category=scanning',
     color: 'warning',
   },
+];
+
+export const quickLinks = [
   {
-    id: 'help-docs',
-    title: 'Help & Documentation',
-    description: 'Guides, tutorials, and API docs',
-    icon: 'book',
-    href: '/knowledge',
-    color: 'success',
+    id: 'tm1',
+    title: 'TM1',
+    description: 'Event management platform',
+    href: 'https://tm1.ticketmaster.com',
+    icon: 'ticket',
+  },
+  {
+    id: 'virtual-venue',
+    title: 'Virtual Venue',
+    description: '3D venue visualization',
+    href: 'https://virtualvenue.ticketmaster.com',
+    icon: 'map',
+  },
+  {
+    id: 'safetix',
+    title: 'SafeTix',
+    description: 'Secure digital ticketing',
+    href: 'https://safetix.ticketmaster.com',
+    icon: 'shield',
+  },
+  {
+    id: 'account-manager',
+    title: 'Account Manager',
+    description: 'Client account portal',
+    href: 'https://accountmanager.ticketmaster.com',
+    icon: 'user',
+  },
+  {
+    id: 'support-community',
+    title: 'Support Community',
+    description: 'Forums and peer support',
+    href: 'https://community.ticketmaster.com',
+    icon: 'users',
   },
 ];
 

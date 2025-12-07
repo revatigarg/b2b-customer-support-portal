@@ -4,10 +4,10 @@ import { TaskTile } from '@/components/home/TaskTile';
 import { FeaturedContent } from '@/components/home/FeaturedContent';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { taskTiles, mockKnowledgeArticles, mockCases, currentUser } from '@/lib/mockData';
+import { taskTiles, quickLinks, mockKnowledgeArticles, mockCases, currentUser } from '@/lib/mockData';
 import { useLocale } from '@/contexts/LocaleContext';
 import { Link } from 'react-router-dom';
-import { FileText, Clock, AlertTriangle } from 'lucide-react';
+import { FileText, Clock, AlertTriangle, ExternalLink, Ticket, Map, Shield, User, Users } from 'lucide-react';
 
 const HomePage = () => {
   const { locale, t } = useLocale();
@@ -26,20 +26,59 @@ const HomePage = () => {
           <HeroSearch />
         </div>
 
-        {/* Task-Based Navigation Tiles */}
-        <section>
-          <h2 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-            {taskTiles.map((tile) => (
-              <TaskTile
-                key={tile.id}
-                title={tile.title}
-                description={tile.description}
-                icon={tile.icon}
-                href={tile.href}
-                color={tile.color}
-              />
-            ))}
+        {/* Task-Based Navigation Tiles + Quick Links */}
+        <section className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Quick Actions - 4 tiles */}
+          <div className="lg:col-span-3">
+            <h2 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {taskTiles.map((tile) => (
+                <TaskTile
+                  key={tile.id}
+                  title={tile.title}
+                  description={tile.description}
+                  icon={tile.icon}
+                  href={tile.href}
+                  color={tile.color}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Quick Links - External Products */}
+          <div className="lg:col-span-1">
+            <h2 className="text-lg font-semibold text-foreground mb-4">Quick Links</h2>
+            <Card className="border-2 border-border bg-card">
+              <CardContent className="p-4 space-y-1">
+                {quickLinks.map((link) => {
+                  const iconMap: Record<string, React.ReactNode> = {
+                    ticket: <Ticket className="h-4 w-4" />,
+                    map: <Map className="h-4 w-4" />,
+                    shield: <Shield className="h-4 w-4" />,
+                    user: <User className="h-4 w-4" />,
+                    users: <Users className="h-4 w-4" />,
+                  };
+                  return (
+                    <a
+                      key={link.id}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-3 hover:bg-secondary/50 transition-colors group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-primary">{iconMap[link.icon]}</span>
+                        <div>
+                          <p className="text-sm font-medium text-foreground">{link.title}</p>
+                          <p className="text-xs text-muted-foreground">{link.description}</p>
+                        </div>
+                      </div>
+                      <ExternalLink className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </a>
+                  );
+                })}
+              </CardContent>
+            </Card>
           </div>
         </section>
 
