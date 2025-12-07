@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -12,25 +11,26 @@ import { ArticleCard } from '@/components/knowledge/ArticleCard';
 import { 
   CATEGORY_OPTIONS, 
   SUBCATEGORY_OPTIONS, 
-  URGENCY_OPTIONS, 
-  MARKET_OPTIONS,
+  URGENCY_OPTIONS,
   TRIED_SOLUTIONS_OPTIONS,
   RequestCategory,
   Urgency
 } from '@/lib/types';
-import { mockKnowledgeArticles, currentUser } from '@/lib/mockData';
-import { AlertTriangle, Upload, X, CheckCircle2 } from 'lucide-react';
+import { mockKnowledgeArticles, mockEvents, currentUser } from '@/lib/mockData';
+import { useMarket } from '@/contexts/MarketContext';
+import { AlertTriangle, Upload, X, CheckCircle2, Calendar } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { format } from 'date-fns';
 
 const NewCasePage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { market, marketLabel } = useMarket();
   
   const [category, setCategory] = useState<RequestCategory | ''>('');
   const [subCategory, setSubCategory] = useState('');
-  const [eventId, setEventId] = useState('');
+  const [selectedEventId, setSelectedEventId] = useState('');
   const [venuePartnerId, setVenuePartnerId] = useState('VEN-001');
-  const [market, setMarket] = useState(currentUser.market);
   const [urgency, setUrgency] = useState<Urgency | ''>('');
   const [description, setDescription] = useState('');
   const [triedSolutions, setTriedSolutions] = useState<string[]>([]);
@@ -40,6 +40,11 @@ const NewCasePage = () => {
 
   const subCategoryOptions = category ? SUBCATEGORY_OPTIONS[category] : [];
   
+  // Group events by status
+  const upcomingEvents = mockEvents.filter(e => e.status === 'upcoming');
+  const pastEvents = mockEvents.filter(e => e.status === 'past');
+  const selectedEvent = mockEvents.find(e => e.id === selectedEventId);
+
   const recommendedArticles = useMemo(() => {
     if (!category) return [];
     // In a real app, this would be an API call based on category/subCategory
@@ -102,7 +107,7 @@ const NewCasePage = () => {
                       <SelectTrigger id="category" className="border-2">
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-popover">
                         {CATEGORY_OPTIONS.map((option) => (
                           <SelectItem key={option.value} value={option.value}>
                             {option.label}
@@ -118,7 +123,7 @@ const NewCasePage = () => {
                       <SelectTrigger id="subCategory" className="border-2">
                         <SelectValue placeholder="Select sub-category" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-popover">
                         {subCategoryOptions.map((option) => (
                           <SelectItem key={option.value} value={option.value}>
                             {option.label}
@@ -129,46 +134,69 @@ const NewCasePage = () => {
                   </div>
                 </div>
 
-                {/* Event & Venue */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="eventId">Event ID (optional)</Label>
-                    <Input
-                      id="eventId"
-                      placeholder="EVT-123456"
-                      value={eventId}
-                      onChange={(e) => setEventId(e.target.value)}
-                      className="border-2"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="venuePartnerId">Venue / Partner ID</Label>
-                    <Input
-                      id="venuePartnerId"
-                      value={venuePartnerId}
-                      onChange={(e) => setVenuePartnerId(e.target.value)}
-                      className="border-2"
-                    />
-                  </div>
+                {/* Event Selection */}
+                <div className="space-y-2">
+                  <Label htmlFor="event">Related Event (optional)</Label>
+                  <Select value={selectedEventId} onValueChange={setSelectedEventId}>
+                    <SelectTrigger id="event" className="border-2">
+                      <SelectValue placeholder="Select an event" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover max-h-80">
+                      {upcomingEvents.length > 0 && (
+                        <>
+                          <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground bg-secondary">
+                            Upcoming Events
+                          </div>
+                          {upcomingEvents.map((event) => (
+                            <SelectItem key={event.id} value={event.id}>
+                              <div className="flex items-center gap-2">
+                                <Calendar className="h-3.5 w-3.5 text-primary" />
+                                <span>{event.name}</span>
+                                <span className="text-muted-foreground text-xs">
+                                  ({format(event.date, 'MMM d, yyyy')})
+                                </span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </>
+                      )}
+                      {pastEvents.length > 0 && (
+                        <>
+                          <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground bg-secondary">
+                            Past Events
+                          </div>
+                          {pastEvents.map((event) => (
+                            <SelectItem key={event.id} value={event.id}>
+                              <div className="flex items-center gap-2">
+                                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                                <span>{event.name}</span>
+                                <span className="text-muted-foreground text-xs">
+                                  ({format(event.date, 'MMM d, yyyy')})
+                                </span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </>
+                      )}
+                    </SelectContent>
+                  </Select>
+                  {selectedEvent && (
+                    <p className="text-xs text-muted-foreground">
+                      {selectedEvent.venue} • {format(selectedEvent.date, 'EEEE, MMMM d, yyyy h:mm a')}
+                    </p>
+                  )}
                 </div>
 
                 {/* Market & Urgency */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="market">Market / Country</Label>
-                    <Select value={market} onValueChange={setMarket}>
-                      <SelectTrigger id="market" className="border-2">
-                        <SelectValue placeholder="Select market" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {MARKET_OPTIONS.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Label>Market / Country</Label>
+                    <div className="p-3 bg-secondary border-2 border-border text-sm">
+                      {marketLabel}
+                      <span className="text-xs text-muted-foreground ml-2">
+                        (Change in header)
+                      </span>
+                    </div>
                   </div>
 
                   <div className="space-y-2">
@@ -177,7 +205,7 @@ const NewCasePage = () => {
                       <SelectTrigger id="urgency" className="border-2">
                         <SelectValue placeholder="Select urgency" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-popover">
                         {URGENCY_OPTIONS.map((option) => (
                           <SelectItem key={option.value} value={option.value}>
                             {option.label}
@@ -240,7 +268,7 @@ const NewCasePage = () => {
                     ))}
                   </div>
                   {triedSolutions.includes('other') && (
-                    <Input
+                    <Textarea
                       placeholder="Please describe what else you tried..."
                       value={otherSolution}
                       onChange={(e) => setOtherSolution(e.target.value)}

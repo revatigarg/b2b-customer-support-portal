@@ -1,4 +1,92 @@
-import { Case, KnowledgeArticle, SearchResult } from './types';
+import { Case, KnowledgeArticle, SearchResult, Event, TaskTile } from './types';
+
+export const mockEvents: Event[] = [
+  {
+    id: 'EVT-123456',
+    name: 'Taylor Swift - Eras Tour',
+    date: new Date('2024-02-15T19:00:00'),
+    venue: 'Madison Square Garden',
+    status: 'upcoming',
+  },
+  {
+    id: 'EVT-234567',
+    name: 'Beyoncé - Renaissance World Tour',
+    date: new Date('2024-02-20T20:00:00'),
+    venue: 'Madison Square Garden',
+    status: 'upcoming',
+  },
+  {
+    id: 'EVT-345678',
+    name: 'NBA All-Star Game 2024',
+    date: new Date('2024-02-18T18:00:00'),
+    venue: 'Madison Square Garden',
+    status: 'upcoming',
+  },
+  {
+    id: 'EVT-456789',
+    name: 'New York Rangers vs Boston Bruins',
+    date: new Date('2024-01-25T19:30:00'),
+    venue: 'Madison Square Garden',
+    status: 'past',
+  },
+  {
+    id: 'EVT-567890',
+    name: 'Billy Joel Monthly Residency',
+    date: new Date('2024-01-20T20:00:00'),
+    venue: 'Madison Square Garden',
+    status: 'past',
+  },
+  {
+    id: 'EVT-678901',
+    name: 'WWE Monday Night Raw',
+    date: new Date('2024-02-26T19:00:00'),
+    venue: 'Madison Square Garden',
+    status: 'upcoming',
+  },
+];
+
+export const taskTiles: TaskTile[] = [
+  {
+    id: 'prepare-onsale',
+    title: 'Prepare for Onsale',
+    description: 'Set up presales, pricing tiers, and inventory',
+    icon: 'ticket',
+    href: '/knowledge?category=onsale',
+    color: 'primary',
+  },
+  {
+    id: 'event-day-setup',
+    title: 'Event-Day Setup',
+    description: 'Scanners, access control, and gate operations',
+    icon: 'calendar',
+    href: '/knowledge?category=event-day',
+    color: 'secondary',
+  },
+  {
+    id: 'settlement-reports',
+    title: 'Settlement & Reports',
+    description: 'Financial reconciliation and reporting',
+    icon: 'dollar',
+    href: '/knowledge?category=settlement',
+    color: 'accent',
+  },
+  {
+    id: 'access-control',
+    title: 'Access Control & Scanning',
+    description: 'Device setup and troubleshooting',
+    icon: 'scan',
+    href: '/knowledge?category=scanning',
+    color: 'warning',
+  },
+  {
+    id: 'help-docs',
+    title: 'Help & Documentation',
+    description: 'Guides, tutorials, and API docs',
+    icon: 'book',
+    href: '/knowledge',
+    color: 'success',
+  },
+];
 
 export const mockCases: Case[] = [
   {
@@ -7,6 +95,7 @@ export const mockCases: Case[] = [
     category: 'event-day',
     subCategory: 'scanner-sync',
     eventId: 'EVT-123456',
+    eventName: 'Taylor Swift - Eras Tour',
     venuePartnerId: 'VEN-001',
     market: 'us',
     urgency: 'critical',
@@ -32,6 +121,7 @@ export const mockCases: Case[] = [
     partnerId: 'PTR-001',
     role: 'Venue Operations Manager',
     company: 'Madison Square Garden',
+    source: 'portal',
   },
   {
     id: '2',
@@ -55,6 +145,7 @@ export const mockCases: Case[] = [
     partnerId: 'PTR-002',
     role: 'Finance Director',
     company: 'LiveNation UK',
+    source: 'email',
   },
   {
     id: '3',
@@ -62,6 +153,7 @@ export const mockCases: Case[] = [
     category: 'technical-integration',
     subCategory: 'api-error',
     eventId: 'EVT-789012',
+    eventName: 'Summer Music Festival',
     venuePartnerId: 'VEN-003',
     market: 'de',
     urgency: 'high',
@@ -94,6 +186,7 @@ export const mockCases: Case[] = [
     partnerId: 'PTR-003',
     role: 'Lead Developer',
     company: 'EventTech GmbH',
+    source: 'portal',
   },
   {
     id: '4',
@@ -101,6 +194,7 @@ export const mockCases: Case[] = [
     category: 'ticketing-presale',
     subCategory: 'presale-setup',
     eventId: 'EVT-456789',
+    eventName: 'Taylor Swift - Eras Tour',
     venuePartnerId: 'VEN-001',
     market: 'us',
     urgency: 'normal',
@@ -126,6 +220,7 @@ export const mockCases: Case[] = [
     partnerId: 'PTR-001',
     role: 'Venue Operations Manager',
     company: 'Madison Square Garden',
+    source: 'phone',
   },
   {
     id: '5',
@@ -157,6 +252,7 @@ export const mockCases: Case[] = [
     partnerId: 'PTR-004',
     role: 'Revenue Manager',
     company: 'Toronto Sports Arena',
+    source: 'portal',
   },
 ];
 
@@ -205,6 +301,15 @@ export const mockKnowledgeArticles: KnowledgeArticle[] = [
     url: '/training/settlement-reports',
     source: 'Partner Academy',
     relevanceScore: 0.80,
+  },
+  {
+    id: 'kb6',
+    title: 'Presale Setup Guide',
+    description: 'Complete guide to setting up presales, access codes, and fan verification.',
+    type: 'article',
+    url: '/knowledge/presale-setup',
+    source: 'TM1 Documentation',
+    relevanceScore: 0.90,
   },
 ];
 
