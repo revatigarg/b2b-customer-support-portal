@@ -1,10 +1,10 @@
 import { MainLayout } from '@/components/layout/MainLayout';
 import { HeroSearch } from '@/components/home/HeroSearch';
-import { TaskTile } from '@/components/home/TaskTile';
+import { FeaturedTasks } from '@/components/home/FeaturedTasks';
 import { FeaturedContent } from '@/components/home/FeaturedContent';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { taskTiles, quickLinks, mockKnowledgeArticles, mockCases, currentUser } from '@/lib/mockData';
+import { quickLinks, mockKnowledgeArticles, mockCases, currentUser } from '@/lib/mockData';
 import { useLocale } from '@/contexts/LocaleContext';
 import { Link } from 'react-router-dom';
 import { FileText, Clock, AlertTriangle, ExternalLink, Ticket, Map, Shield, User } from 'lucide-react';
@@ -25,31 +25,19 @@ const HomePage = () => {
         <HeroSearch />
       </div>
 
+      {/* Full-width Featured Tasks Section */}
+      <div className="-mx-6 mb-6">
+        <FeaturedTasks persona="event-organizer" userName={currentUser.name.split(' ')[0]} />
+      </div>
+
       <div className="max-w-6xl mx-auto space-y-6">
 
         {/* Main Content Grid - 2/3 + 1/3 layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Left Column - Quick Actions + Featured Content */}
+          {/* Left Column - Featured Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Quick Actions - 4 tiles in 2x2 grid */}
-            <section>
-              <h2 className="text-lg font-semibold text-foreground mb-3">{t('quickActions')}</h2>
-              <div className="grid grid-cols-2 gap-3">
-                {taskTiles.map((tile) => (
-                  <TaskTile
-                    key={tile.id}
-                    title={tile.title}
-                    description={tile.description}
-                    icon={tile.icon}
-                    href={tile.href}
-                    color={tile.color}
-                  />
-                ))}
-              </div>
-            </section>
-
             {/* Featured Content */}
-            <FeaturedContent 
+            <FeaturedContent
               articles={mockKnowledgeArticles.slice(0, 4)} 
               title={`${t('recommendedFor')} ${locale.label}`}
             />
