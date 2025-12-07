@@ -2,6 +2,8 @@ export type Urgency = 'critical' | 'high' | 'normal' | 'low';
 
 export type CaseStatus = 'open' | 'in-progress' | 'pending' | 'resolved' | 'closed';
 
+export type CaseSource = 'portal' | 'email' | 'phone';
+
 export type RequestCategory = 
   | 'ticketing-presale'
   | 'event-day'
@@ -12,12 +14,21 @@ export type RequestCategory =
 
 export type SubCategory = string;
 
+export interface Event {
+  id: string;
+  name: string;
+  date: Date;
+  venue: string;
+  status: 'upcoming' | 'past' | 'cancelled';
+}
+
 export interface Case {
   id: string;
   caseNumber: string;
   category: RequestCategory;
   subCategory: SubCategory;
   eventId?: string;
+  eventName?: string;
   venuePartnerId: string;
   market: string;
   urgency: Urgency;
@@ -35,6 +46,7 @@ export interface Case {
   partnerId: string;
   role: string;
   company: string;
+  source: CaseSource;
 }
 
 export interface Attachment {
@@ -71,6 +83,15 @@ export interface SearchResult {
   source: string;
   url: string;
   date?: Date;
+}
+
+export interface TaskTile {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  href: string;
+  color: 'primary' | 'secondary' | 'accent' | 'warning' | 'success';
 }
 
 export const CATEGORY_OPTIONS = [
