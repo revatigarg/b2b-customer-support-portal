@@ -19,12 +19,13 @@ const HomePage = () => {
   const criticalCases = openCases.filter(c => c.urgency === 'critical');
 
   return (
-    <MainLayout title="Partner Experience Cloud Portal" showSearch={false}>
+    <MainLayout showSearch={false}>
+      {/* Full-width Hero Search Section */}
+      <div className="-m-6 mb-6">
+        <HeroSearch />
+      </div>
+
       <div className="max-w-6xl mx-auto space-y-6">
-        {/* Hero Search Section */}
-        <div className="py-6">
-          <HeroSearch />
-        </div>
 
         {/* Main Content Grid - 2/3 + 1/3 layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
