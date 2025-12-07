@@ -1,18 +1,19 @@
-import { Bell, Search, Globe, Headphones } from 'lucide-react';
+import { Bell, Search, Globe, Headphones, ChevronDown, ChevronUp, Check, MessageSquare, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
-} from '@/components/ui/dropdown-menu';
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { useNavigate, Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useLocale } from '@/contexts/LocaleContext';
-import { LOCALE_CONFIGS, MarketCode } from '@/lib/locale';
+import { MARKET_CONFIGS, MarketCode, LanguageCode } from '@/lib/locale';
+import { cn } from '@/lib/utils';
+import { Separator } from '@/components/ui/separator';
 
 interface HeaderProps {
   title: string;
@@ -22,7 +23,10 @@ interface HeaderProps {
 export function Header({ title, showSearch = true }: HeaderProps) {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const { market, setMarket, locale, t } = useLocale();
+  const { market, setMarket, language, setLanguage, locale, t } = useLocale();
+  const [isOpen, setIsOpen] = useState(false);
+  const [countriesExpanded, setCountriesExpanded] = useState(true);
+  const [languageExpanded, setLanguageExpanded] = useState(true);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +35,21 @@ export function Header({ title, showSearch = true }: HeaderProps) {
     }
   };
 
-  const marketOptions = Object.values(LOCALE_CONFIGS);
+  const marketOptions = Object.values(MARKET_CONFIGS);
+  const hasMultipleLanguages = locale.languages.length > 1;
+
+  const handleMarketSelect = (newMarket: MarketCode) => {
+    setMarket(newMarket);
+    // If the new market has only one language, close the dialog
+    if (MARKET_CONFIGS[newMarket].languages.length === 1) {
+      setIsOpen(false);
+    }
+  };
+
+  const handleLanguageSelect = (newLanguage: LanguageCode) => {
+    setLanguage(newLanguage);
+    setIsOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-border bg-background px-6">
@@ -52,30 +70,119 @@ export function Header({ title, showSearch = true }: HeaderProps) {
         )}
 
         {/* Region/Language Selector */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
             <Button variant="outline" size="sm" className="gap-2">
               <Globe className="h-4 w-4" />
-              <span className="hidden sm:inline">{locale.flag} {locale.label}</span>
+              <span className="hidden sm:inline">{locale.flag} {locale.nativeLabel}</span>
               <span className="sm:hidden">{locale.flag}</span>
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56 bg-popover">
-            <DropdownMenuLabel>{t('selectMarket')}</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {marketOptions.map((option) => (
-              <DropdownMenuItem
-                key={option.market}
-                onClick={() => setMarket(option.market as MarketCode)}
-                className={market === option.market ? 'bg-accent' : ''}
-              >
-                <span className="mr-2">{option.flag}</span>
-                <span className="flex-1">{option.label}</span>
-                <span className="text-xs text-muted-foreground">{option.currency.code}</span>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md bg-background">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <ArrowLeft className="h-4 w-4 cursor-pointer" onClick={() => setIsOpen(false)} />
+                {t('location')}
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-4 mt-4">
+              {/* Countries Section */}
+              <div>
+                <button
+                  onClick={() => setCountriesExpanded(!countriesExpanded)}
+                  className="flex items-center justify-between w-full p-3 bg-secondary/50 rounded-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{locale.flag}</span>
+                    <div className="text-left">
+                      <p className="text-sm text-muted-foreground">{t('countries')}</p>
+                      <p className="font-medium">{locale.nativeLabel}</p>
+                    </div>
+                  </div>
+                  {countriesExpanded ? (
+                    <ChevronUp className="h-5 w-5 text-primary" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                  )}
+                </button>
+                
+                {countriesExpanded && (
+                  <div className="mt-2 max-h-64 overflow-y-auto space-y-1">
+                    {marketOptions.map((option) => (
+                      <button
+                        key={option.market}
+                        onClick={() => handleMarketSelect(option.market)}
+                        className={cn(
+                          "flex items-center gap-3 w-full p-3 rounded-lg transition-colors text-left",
+                          market === option.market 
+                            ? "bg-secondary" 
+                            : "hover:bg-secondary/50"
+                        )}
+                      >
+                        <span className="text-xl">{option.flag}</span>
+                        <span className="flex-1">{option.nativeLabel}</span>
+                        {market === option.market && (
+                          <Check className="h-5 w-5 text-primary" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Language Section - Only show if multiple languages available */}
+              {hasMultipleLanguages && (
+                <>
+                  <Separator />
+                  <div>
+                    <button
+                      onClick={() => setLanguageExpanded(!languageExpanded)}
+                      className="flex items-center justify-between w-full p-3 bg-secondary/50 rounded-lg"
+                    >
+                      <div className="flex items-center gap-3">
+                        <MessageSquare className="h-5 w-5 text-muted-foreground" />
+                        <div className="text-left">
+                          <p className="text-sm text-muted-foreground">{t('language')}</p>
+                          <p className="font-medium">
+                            {locale.languages.find(l => l.code === language)?.nativeLabel || 'English'}
+                          </p>
+                        </div>
+                      </div>
+                      {languageExpanded ? (
+                        <ChevronUp className="h-5 w-5 text-primary" />
+                      ) : (
+                        <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                      )}
+                    </button>
+                    
+                    {languageExpanded && (
+                      <div className="mt-2 space-y-1">
+                        {locale.languages.map((lang) => (
+                          <button
+                            key={lang.code}
+                            onClick={() => handleLanguageSelect(lang.code)}
+                            className={cn(
+                              "flex items-center justify-between w-full p-3 rounded-lg transition-colors text-left",
+                              language === lang.code 
+                                ? "text-primary" 
+                                : "hover:bg-secondary/50"
+                            )}
+                          >
+                            <span>{lang.nativeLabel}</span>
+                            {language === lang.code && (
+                              <Check className="h-5 w-5 text-primary" />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Submit Ticket - Secondary placement */}
         <Button variant="ghost" size="sm" asChild className="gap-2 text-muted-foreground hover:text-foreground">

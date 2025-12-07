@@ -32,7 +32,7 @@ const HomePage = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Quick Actions - 4 tiles in 2x2 grid */}
             <section>
-              <h2 className="text-lg font-semibold text-foreground mb-3">Quick Actions</h2>
+              <h2 className="text-lg font-semibold text-foreground mb-3">{t('quickActions')}</h2>
               <div className="grid grid-cols-2 gap-3">
                 {taskTiles.map((tile) => (
                   <TaskTile
@@ -50,7 +50,7 @@ const HomePage = () => {
             {/* Featured Content */}
             <FeaturedContent 
               articles={mockKnowledgeArticles.slice(0, 4)} 
-              title={`Recommended for ${locale.label}`}
+              title={`${t('recommendedFor')} ${locale.label}`}
             />
           </div>
 
@@ -59,7 +59,7 @@ const HomePage = () => {
             {/* Quick Links - External Products */}
             <Card className="border-2 border-border bg-card">
               <CardContent className="p-4">
-                <h3 className="font-semibold text-foreground mb-3">Quick Links</h3>
+                <h3 className="font-semibold text-foreground mb-3">{t('quickLinks')}</h3>
                 <div className="space-y-1">
                   {quickLinks.map((link) => {
                     const iconMap: Record<string, React.ReactNode> = {
@@ -95,16 +95,16 @@ const HomePage = () => {
             <Card className="border-2 border-border bg-card">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-foreground">Your Cases</h3>
+                  <h3 className="font-semibold text-foreground">{t('yourCases')}</h3>
                   <Button variant="ghost" size="sm" asChild>
-                    <Link to="/cases">View All</Link>
+                    <Link to="/cases">{t('viewAll')}</Link>
                   </Button>
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between p-2.5 bg-secondary/50">
                     <div className="flex items-center gap-3">
                       <FileText className="h-4 w-4 text-primary" />
-                      <span className="text-sm">Open Cases</span>
+                      <span className="text-sm">{t('openCases')}</span>
                     </div>
                     <span className="font-semibold">{openCases.length}</span>
                   </div>
@@ -112,7 +112,7 @@ const HomePage = () => {
                     <div className="flex items-center justify-between p-2.5 bg-destructive/10 border border-destructive/30">
                       <div className="flex items-center gap-3">
                         <AlertTriangle className="h-4 w-4 text-destructive" />
-                        <span className="text-sm text-destructive font-medium">Critical Issues</span>
+                        <span className="text-sm text-destructive font-medium">{t('criticalIssues')}</span>
                       </div>
                       <span className="font-semibold text-destructive">{criticalCases.length}</span>
                     </div>
@@ -124,7 +124,7 @@ const HomePage = () => {
             {/* Recent Activity */}
             <Card className="border-2 border-border bg-card">
               <CardContent className="p-4">
-                <h3 className="font-semibold text-foreground mb-3">Recent Activity</h3>
+                <h3 className="font-semibold text-foreground mb-3">{t('recentActivity')}</h3>
                 <div className="space-y-2">
                   {mockCases.slice(0, 3).map((caseData) => (
                     <Link 
@@ -150,12 +150,12 @@ const HomePage = () => {
             {/* Need More Help */}
             <Card className="border-2 border-primary/30 bg-primary/5">
               <CardContent className="p-4 text-center">
-                <h3 className="font-semibold text-foreground mb-2">Can't find what you need?</h3>
+                <h3 className="font-semibold text-foreground mb-2">{t('cantFindWhatYouNeed')}</h3>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Our support team is here to help with any questions.
+                  {t('ourSupportTeamIsHere')}
                 </p>
                 <Button asChild className="w-full">
-                  <Link to="/cases/new">Submit a Support Request</Link>
+                  <Link to="/cases/new">{t('submitSupportRequest')}</Link>
                 </Button>
               </CardContent>
             </Card>
