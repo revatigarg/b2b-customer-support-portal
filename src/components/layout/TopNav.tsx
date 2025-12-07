@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useLocale } from '@/contexts/LocaleContext';
-import { ChevronDown, ChevronUp, Check, MessageSquare, ArrowLeft, User } from 'lucide-react';
+import { ChevronDown, ChevronUp, Check, MessageSquare, ArrowLeft, User, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -14,6 +14,12 @@ import { Separator } from '@/components/ui/separator';
 import { useState } from 'react';
 import { MARKET_CONFIGS, MarketCode, LanguageCode } from '@/lib/locale';
 import { currentUser } from '@/lib/mockData';
+
+const quickLinks = [
+  { name: 'TM1', href: 'https://tm1.ticketmaster.com', external: true },
+  { name: 'Account Manager', href: 'https://am.ticketmaster.com', external: true },
+  { name: 'SafeTix', href: 'https://safetix.ticketmaster.com', external: true },
+];
 
 export function TopNav() {
   const location = useLocation();
@@ -162,13 +168,36 @@ export function TopNav() {
             </DialogContent>
           </Dialog>
 
-          {/* Right: Get Support */}
-          <Link 
-            to="/cases/new" 
-            className="text-sm font-medium hover:opacity-80 transition-opacity"
-          >
-            {t('getSupport')}
-          </Link>
+          {/* Right: Quick Links + Get Support */}
+          <div className="flex items-center gap-6">
+            {/* Quick Links */}
+            <nav className="hidden md:flex items-center gap-5">
+              {quickLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm hover:opacity-80 transition-opacity"
+                >
+                  {link.name}
+                </a>
+              ))}
+            </nav>
+
+            {/* Separator */}
+            <div className="hidden md:block h-4 w-px bg-white/30" />
+
+            {/* Get Support - Highlighted */}
+            <Link 
+              to="/cases/new" 
+              className="flex items-center gap-2 text-sm font-semibold hover:opacity-80 transition-opacity"
+            >
+              <span className="text-primary bg-white px-2 py-0.5 rounded text-xs font-bold">
+                {t('getSupport')}
+              </span>
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -207,8 +236,14 @@ export function TopNav() {
             </nav>
           </div>
 
-          {/* Right: User Login */}
-          <div className="flex items-center gap-3">
+          {/* Right: Search + User Login */}
+          <div className="flex items-center gap-4">
+            {/* Search Icon */}
+            <button className="flex items-center gap-2 text-primary-foreground hover:opacity-80 transition-opacity">
+              <Search className="h-5 w-5" />
+            </button>
+
+            {/* User Login */}
             <Button 
               variant="ghost" 
               size="sm" 
