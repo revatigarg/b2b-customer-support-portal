@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Home, BookOpen, FileText, Users } from 'lucide-react';
-import { currentUser } from '@/lib/mockData';
+import { Home, BookOpen, FileText, Users, Music } from 'lucide-react';
+import { currentUser, currentAccount } from '@/lib/mockData';
 import { useLocale } from '@/contexts/LocaleContext';
 import { Badge } from '@/components/ui/badge';
 
@@ -30,14 +30,14 @@ export function Sidebar() {
   return (
     <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
       <div className="flex h-full flex-col">
-        {/* Logo */}
-        <div className="flex h-16 items-center gap-3 px-6 border-b border-sidebar-border">
-          <div className="flex h-9 w-9 items-center justify-center bg-sidebar-primary">
-            <span className="text-lg font-bold text-sidebar-primary-foreground">TM</span>
+        {/* Account Header */}
+        <div className="flex items-center gap-3 px-4 py-4 border-b border-sidebar-border">
+          <div className="flex h-10 w-10 items-center justify-center bg-sidebar-primary rounded">
+            <Music className="h-5 w-5 text-sidebar-primary-foreground" />
           </div>
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold">Partner Portal</span>
-            <span className="text-xs text-sidebar-foreground/60">Experience Cloud</span>
+          <div className="flex flex-col min-w-0">
+            <span className="text-sm font-semibold truncate">{currentAccount.artist}</span>
+            <span className="text-xs text-sidebar-foreground/60 truncate">{currentAccount.tourName}</span>
           </div>
         </div>
 
