@@ -34,6 +34,7 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     // Navigation
     home: 'Home',
     knowledgeBase: 'Knowledge Base',
+    taskGuides: 'Task Guides',
     myCases: 'My Cases',
     search: 'Search',
     getSupport: 'Get Support',
@@ -128,6 +129,7 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     // Navigation
     home: 'Accueil',
     knowledgeBase: 'Base de connaissances',
+    taskGuides: 'Guides de tâches',
     myCases: 'Mes demandes',
     search: 'Rechercher',
     getSupport: 'Obtenir de l\'aide',
@@ -222,6 +224,7 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     // Navigation
     home: 'Startseite',
     knowledgeBase: 'Wissensdatenbank',
+    taskGuides: 'Aufgabenleitfäden',
     myCases: 'Meine Anfragen',
     search: 'Suchen',
     getSupport: 'Support erhalten',
@@ -316,6 +319,7 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     // Navigation
     home: 'Inicio',
     knowledgeBase: 'Base de conocimientos',
+    taskGuides: 'Guías de tareas',
     myCases: 'Mis casos',
     search: 'Buscar',
     getSupport: 'Obtener ayuda',
@@ -410,6 +414,7 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     // Navigation
     home: 'Início',
     knowledgeBase: 'Base de conhecimento',
+    taskGuides: 'Guias de tarefas',
     myCases: 'Meus casos',
     search: 'Pesquisar',
     getSupport: 'Obter suporte',
@@ -504,6 +509,7 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     // Navigation
     home: 'Home',
     knowledgeBase: 'Knowledge Base',
+    taskGuides: 'Guide alle attività',
     myCases: 'I miei casi',
     search: 'Cerca',
     getSupport: 'Ottieni supporto',
@@ -598,6 +604,7 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     // Navigation
     home: 'Hjem',
     knowledgeBase: 'Vidensbase',
+    taskGuides: 'Opgaveguides',
     myCases: 'Mine sager',
     search: 'Søg',
     getSupport: 'Få support',
@@ -692,6 +699,7 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     // Navigation
     home: 'Domů',
     knowledgeBase: 'Znalostní báze',
+    taskGuides: 'Průvodci úkoly',
     myCases: 'Moje případy',
     search: 'Hledat',
     getSupport: 'Získat podporu',
@@ -786,6 +794,7 @@ export const TRANSLATIONS: Record<LanguageCode, Record<string, string>> = {
     // Navigation
     home: 'Αρχική',
     knowledgeBase: 'Βάση γνώσεων',
+    taskGuides: 'Οδηγοί εργασιών',
     myCases: 'Οι υποθέσεις μου',
     search: 'Αναζήτηση',
     getSupport: 'Λήψη υποστήριξης',

@@ -9,7 +9,7 @@ import CasesPage from "./pages/CasesPage";
 import CaseDetailPage from "./pages/CaseDetailPage";
 import NewCasePage from "./pages/NewCasePage";
 import SearchPage from "./pages/SearchPage";
-import KnowledgeBasePage from "./pages/KnowledgeBasePage";
+import TaskGuidesPage from "./pages/TaskGuidesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,7 +28,7 @@ function App() {
               <Route path="/cases/new" element={<NewCasePage />} />
               <Route path="/cases/:id" element={<CaseDetailPage />} />
               <Route path="/search" element={<SearchPage />} />
-              <Route path="/knowledge" element={<KnowledgeBasePage />} />
+              <Route path="/knowledge" element={<TaskGuidesPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
