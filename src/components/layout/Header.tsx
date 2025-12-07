@@ -11,8 +11,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useNavigate, Link } from 'react-router-dom';
 import { useState } from 'react';
-import { useMarket } from '@/contexts/MarketContext';
-import { MARKET_OPTIONS } from '@/lib/types';
+import { useLocale } from '@/contexts/LocaleContext';
+import { LOCALE_CONFIGS, MarketCode } from '@/lib/locale';
 
 interface HeaderProps {
   title: string;
@@ -22,7 +22,7 @@ interface HeaderProps {
 export function Header({ title, showSearch = true }: HeaderProps) {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const { market, setMarket, marketLabel } = useMarket();
+  const { market, setMarket, locale, t } = useLocale();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +30,8 @@ export function Header({ title, showSearch = true }: HeaderProps) {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
   };
+
+  const marketOptions = Object.values(LOCALE_CONFIGS);
 
   return (
     <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-border bg-background px-6">
@@ -41,7 +43,7 @@ export function Header({ title, showSearch = true }: HeaderProps) {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search knowledge, cases, docs..."
+              placeholder={`${t('search')}...`}
               className="pl-10 bg-secondary border-border"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -49,24 +51,27 @@ export function Header({ title, showSearch = true }: HeaderProps) {
           </form>
         )}
 
-        {/* Market Selector */}
+        {/* Region/Language Selector */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="gap-2">
               <Globe className="h-4 w-4" />
-              <span className="hidden sm:inline">{marketLabel}</span>
+              <span className="hidden sm:inline">{locale.flag} {locale.label}</span>
+              <span className="sm:hidden">{locale.flag}</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48 bg-popover">
-            <DropdownMenuLabel>Select Market</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-56 bg-popover">
+            <DropdownMenuLabel>{t('selectMarket')}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {MARKET_OPTIONS.map((option) => (
+            {marketOptions.map((option) => (
               <DropdownMenuItem
-                key={option.value}
-                onClick={() => setMarket(option.value)}
-                className={market === option.value ? 'bg-accent' : ''}
+                key={option.market}
+                onClick={() => setMarket(option.market as MarketCode)}
+                className={market === option.market ? 'bg-accent' : ''}
               >
-                {option.label}
+                <span className="mr-2">{option.flag}</span>
+                <span className="flex-1">{option.label}</span>
+                <span className="text-xs text-muted-foreground">{option.currency.code}</span>
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
@@ -76,7 +81,7 @@ export function Header({ title, showSearch = true }: HeaderProps) {
         <Button variant="ghost" size="sm" asChild className="gap-2 text-muted-foreground hover:text-foreground">
           <Link to="/cases/new">
             <Headphones className="h-4 w-4" />
-            <span className="hidden md:inline">Get Support</span>
+            <span className="hidden md:inline">{t('getSupport')}</span>
           </Link>
         </Button>
 

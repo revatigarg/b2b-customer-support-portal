@@ -1,46 +1,31 @@
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Search, FileText, Home, BookOpen, Settings, HelpCircle } from 'lucide-react';
+import { Home, BookOpen, FileText, Users } from 'lucide-react';
 import { currentUser } from '@/lib/mockData';
-
-const navigation = [
-  {
-    name: 'Home',
-    href: '/',
-    icon: Home
-  },
-  {
-    name: 'Search',
-    href: '/search',
-    icon: Search
-  },
-  {
-    name: 'My Cases',
-    href: '/cases',
-    icon: FileText
-  },
-  {
-    name: 'Knowledge Base',
-    href: '/knowledge',
-    icon: BookOpen
-  }
-];
-
-const secondaryNavigation = [
-  {
-    name: 'Settings',
-    href: '/settings',
-    icon: Settings
-  },
-  {
-    name: 'Help',
-    href: '/help',
-    icon: HelpCircle
-  }
-];
+import { useLocale } from '@/contexts/LocaleContext';
+import { Badge } from '@/components/ui/badge';
 
 export function Sidebar() {
   const location = useLocation();
+  const { t, userRole, setUserRole, isAccountManager } = useLocale();
+
+  const navigation = [
+    {
+      name: t('home'),
+      href: '/',
+      icon: Home,
+    },
+    {
+      name: t('knowledgeBase'),
+      href: '/knowledge',
+      icon: BookOpen,
+    },
+    {
+      name: t('myCases'),
+      href: '/cases',
+      icon: FileText,
+    },
+  ];
   
   return (
     <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
@@ -56,11 +41,39 @@ export function Sidebar() {
           </div>
         </div>
 
+        {/* Role Toggle (for demo) */}
+        <div className="px-4 py-3 border-b border-sidebar-border">
+          <p className="text-xs font-medium uppercase tracking-wider text-sidebar-foreground/50 mb-2">
+            View As
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setUserRole('partner')}
+              className={cn(
+                'flex-1 px-3 py-1.5 text-xs font-medium rounded transition-colors',
+                userRole === 'partner'
+                  ? 'bg-sidebar-primary text-sidebar-primary-foreground'
+                  : 'bg-sidebar-accent/50 text-sidebar-foreground/70 hover:bg-sidebar-accent'
+              )}
+            >
+              Partner
+            </button>
+            <button
+              onClick={() => setUserRole('account-manager')}
+              className={cn(
+                'flex-1 px-3 py-1.5 text-xs font-medium rounded transition-colors',
+                userRole === 'account-manager'
+                  ? 'bg-sidebar-primary text-sidebar-primary-foreground'
+                  : 'bg-sidebar-accent/50 text-sidebar-foreground/70 hover:bg-sidebar-accent'
+              )}
+            >
+              Account Mgr
+            </button>
+          </div>
+        </div>
+
         {/* Main Navigation */}
         <nav className="flex-1 space-y-1 px-4 py-4">
-          <p className="px-2 py-2 text-xs font-medium uppercase tracking-wider text-sidebar-foreground/50">
-            Main Menu
-          </p>
           {navigation.map(item => {
             const isActive = location.pathname === item.href || 
               (item.href !== '/' && location.pathname.startsWith(item.href));
@@ -89,28 +102,6 @@ export function Sidebar() {
           })}
         </nav>
 
-        {/* Secondary Navigation */}
-        <nav className="border-t border-sidebar-border px-4 py-4 space-y-1">
-          {secondaryNavigation.map(item => {
-            const isActive = location.pathname === item.href;
-            return (
-              <Link 
-                key={item.name} 
-                to={item.href} 
-                className={cn(
-                  'group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-colors',
-                  isActive 
-                    ? 'bg-sidebar-accent text-sidebar-accent-foreground' 
-                    : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground'
-                )}
-              >
-                <item.icon className="h-5 w-5 shrink-0 text-sidebar-foreground/50" />
-                {item.name}
-              </Link>
-            );
-          })}
-        </nav>
-
         {/* User Info */}
         <div className="border-t border-sidebar-border p-4">
           <div className="flex items-center gap-3">
@@ -119,7 +110,15 @@ export function Sidebar() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">{currentUser.name}</p>
-              <p className="text-xs text-sidebar-foreground/60 truncate">{currentUser.role}</p>
+              <div className="flex items-center gap-2">
+                <p className="text-xs text-sidebar-foreground/60 truncate">{currentUser.role}</p>
+                {isAccountManager && (
+                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                    <Users className="h-2.5 w-2.5 mr-0.5" />
+                    AM
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
         </div>
