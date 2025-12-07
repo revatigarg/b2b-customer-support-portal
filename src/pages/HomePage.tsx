@@ -20,18 +20,18 @@ const HomePage = () => {
 
   return (
     <MainLayout title="Partner Portal" showSearch={false}>
-      <div className="max-w-6xl mx-auto space-y-8">
+      <div className="max-w-6xl mx-auto space-y-6">
         {/* Hero Search Section */}
-        <div className="py-8">
+        <div className="py-6">
           <HeroSearch />
         </div>
 
         {/* Task-Based Navigation Tiles + Quick Links */}
-        <section className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Quick Actions - 4 tiles */}
+        <section className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          {/* Quick Actions - 4 tiles in 2x2 grid */}
           <div className="lg:col-span-3">
-            <h2 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <h2 className="text-lg font-semibold text-foreground mb-3">Quick Actions</h2>
+            <div className="grid grid-cols-2 gap-3">
               {taskTiles.map((tile) => (
                 <TaskTile
                   key={tile.id}
@@ -47,9 +47,9 @@ const HomePage = () => {
 
           {/* Quick Links - External Products */}
           <div className="lg:col-span-1">
-            <h2 className="text-lg font-semibold text-foreground mb-4">Quick Links</h2>
-            <Card className="border-2 border-border bg-card">
-              <CardContent className="p-4 space-y-1">
+            <h2 className="text-lg font-semibold text-foreground mb-3">Quick Links</h2>
+            <Card className="border-2 border-border bg-card h-fit">
+              <CardContent className="p-3 space-y-0">
                 {quickLinks.map((link) => {
                   const iconMap: Record<string, React.ReactNode> = {
                     ticket: <Ticket className="h-4 w-4" />,
@@ -64,7 +64,7 @@ const HomePage = () => {
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between p-3 hover:bg-secondary/50 transition-colors group"
+                      className="flex items-center justify-between p-2.5 hover:bg-secondary/50 transition-colors group"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-primary">{iconMap[link.icon]}</span>
@@ -83,7 +83,7 @@ const HomePage = () => {
         </section>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Featured Content */}
           <div className="lg:col-span-2">
             <FeaturedContent 
