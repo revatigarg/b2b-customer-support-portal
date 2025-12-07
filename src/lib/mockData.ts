@@ -89,11 +89,11 @@ export const quickLinks = [
     icon: 'ticket',
   },
   {
-    id: 'virtual-venue',
-    title: 'Virtual Venue',
-    description: '3D venue visualization',
-    href: 'https://virtualvenue.ticketmaster.com',
-    icon: 'map',
+    id: 'account-manager',
+    title: 'Account Manager',
+    description: 'Client account portal',
+    href: 'https://accountmanager.ticketmaster.com',
+    icon: 'user',
   },
   {
     id: 'safetix',
@@ -103,18 +103,11 @@ export const quickLinks = [
     icon: 'shield',
   },
   {
-    id: 'account-manager',
-    title: 'Account Manager',
-    description: 'Client account portal',
-    href: 'https://accountmanager.ticketmaster.com',
-    icon: 'user',
-  },
-  {
-    id: 'support-community',
-    title: 'Support Community',
-    description: 'Forums and peer support',
-    href: 'https://community.ticketmaster.com',
-    icon: 'users',
+    id: 'virtual-venue',
+    title: 'Virtual Venue',
+    description: '3D venue visualization',
+    href: 'https://virtualvenue.ticketmaster.com',
+    icon: 'map',
   },
 ];
 

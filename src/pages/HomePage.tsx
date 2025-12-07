@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { taskTiles, quickLinks, mockKnowledgeArticles, mockCases, currentUser } from '@/lib/mockData';
 import { useLocale } from '@/contexts/LocaleContext';
 import { Link } from 'react-router-dom';
-import { FileText, Clock, AlertTriangle, ExternalLink, Ticket, Map, Shield, User, Users } from 'lucide-react';
+import { FileText, Clock, AlertTriangle, ExternalLink, Ticket, Map, Shield, User } from 'lucide-react';
 
 const HomePage = () => {
   const { locale, t } = useLocale();
@@ -26,95 +26,92 @@ const HomePage = () => {
           <HeroSearch />
         </div>
 
-        {/* Task-Based Navigation Tiles + Quick Links */}
-        <section className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          {/* Quick Actions - 4 tiles in 2x2 grid */}
-          <div className="lg:col-span-3">
-            <h2 className="text-lg font-semibold text-foreground mb-3">Quick Actions</h2>
-            <div className="grid grid-cols-2 gap-3">
-              {taskTiles.map((tile) => (
-                <TaskTile
-                  key={tile.id}
-                  title={tile.title}
-                  description={tile.description}
-                  icon={tile.icon}
-                  href={tile.href}
-                  color={tile.color}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Quick Links - External Products */}
-          <div className="lg:col-span-1">
-            <h2 className="text-lg font-semibold text-foreground mb-3">Quick Links</h2>
-            <Card className="border-2 border-border bg-card h-fit">
-              <CardContent className="p-3 space-y-0">
-                {quickLinks.map((link) => {
-                  const iconMap: Record<string, React.ReactNode> = {
-                    ticket: <Ticket className="h-4 w-4" />,
-                    map: <Map className="h-4 w-4" />,
-                    shield: <Shield className="h-4 w-4" />,
-                    user: <User className="h-4 w-4" />,
-                    users: <Users className="h-4 w-4" />,
-                  };
-                  return (
-                    <a
-                      key={link.id}
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between p-2.5 hover:bg-secondary/50 transition-colors group"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-primary">{iconMap[link.icon]}</span>
-                        <div>
-                          <p className="text-sm font-medium text-foreground">{link.title}</p>
-                          <p className="text-xs text-muted-foreground">{link.description}</p>
-                        </div>
-                      </div>
-                      <ExternalLink className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </a>
-                  );
-                })}
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
-        {/* Main Content Grid */}
+        {/* Main Content Grid - 2/3 + 1/3 layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Featured Content */}
-          <div className="lg:col-span-2">
+          {/* Left Column - Quick Actions + Featured Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Quick Actions - 4 tiles in 2x2 grid */}
+            <section>
+              <h2 className="text-lg font-semibold text-foreground mb-3">Quick Actions</h2>
+              <div className="grid grid-cols-2 gap-3">
+                {taskTiles.map((tile) => (
+                  <TaskTile
+                    key={tile.id}
+                    title={tile.title}
+                    description={tile.description}
+                    icon={tile.icon}
+                    href={tile.href}
+                    color={tile.color}
+                  />
+                ))}
+              </div>
+            </section>
+
+            {/* Featured Content */}
             <FeaturedContent 
               articles={mockKnowledgeArticles.slice(0, 4)} 
               title={`Recommended for ${locale.label}`}
             />
           </div>
 
-          {/* Sidebar - Case Summary & Quick Help */}
+          {/* Right Column - Sidebar */}
           <div className="space-y-4">
+            {/* Quick Links - External Products */}
+            <Card className="border-2 border-border bg-card">
+              <CardContent className="p-4">
+                <h3 className="font-semibold text-foreground mb-3">Quick Links</h3>
+                <div className="space-y-1">
+                  {quickLinks.map((link) => {
+                    const iconMap: Record<string, React.ReactNode> = {
+                      ticket: <Ticket className="h-4 w-4" />,
+                      map: <Map className="h-4 w-4" />,
+                      shield: <Shield className="h-4 w-4" />,
+                      user: <User className="h-4 w-4" />,
+                    };
+                    return (
+                      <a
+                        key={link.id}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between p-2.5 hover:bg-secondary/50 transition-colors group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-primary">{iconMap[link.icon]}</span>
+                          <div>
+                            <p className="text-sm font-medium text-foreground">{link.title}</p>
+                            <p className="text-xs text-muted-foreground">{link.description}</p>
+                          </div>
+                        </div>
+                        <ExternalLink className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </a>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Open Cases Summary */}
             <Card className="border-2 border-border bg-card">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between mb-4">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold text-foreground">Your Cases</h3>
                   <Button variant="ghost" size="sm" asChild>
                     <Link to="/cases">View All</Link>
                   </Button>
                 </div>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-secondary/50">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between p-2.5 bg-secondary/50">
                     <div className="flex items-center gap-3">
-                      <FileText className="h-5 w-5 text-primary" />
+                      <FileText className="h-4 w-4 text-primary" />
                       <span className="text-sm">Open Cases</span>
                     </div>
                     <span className="font-semibold">{openCases.length}</span>
                   </div>
                   {criticalCases.length > 0 && (
-                    <div className="flex items-center justify-between p-3 bg-destructive/10 border border-destructive/30">
+                    <div className="flex items-center justify-between p-2.5 bg-destructive/10 border border-destructive/30">
                       <div className="flex items-center gap-3">
-                        <AlertTriangle className="h-5 w-5 text-destructive" />
+                        <AlertTriangle className="h-4 w-4 text-destructive" />
                         <span className="text-sm text-destructive font-medium">Critical Issues</span>
                       </div>
                       <span className="font-semibold text-destructive">{criticalCases.length}</span>
@@ -126,14 +123,14 @@ const HomePage = () => {
 
             {/* Recent Activity */}
             <Card className="border-2 border-border bg-card">
-              <CardContent className="p-5">
-                <h3 className="font-semibold text-foreground mb-4">Recent Activity</h3>
-                <div className="space-y-3">
+              <CardContent className="p-4">
+                <h3 className="font-semibold text-foreground mb-3">Recent Activity</h3>
+                <div className="space-y-2">
                   {mockCases.slice(0, 3).map((caseData) => (
                     <Link 
                       key={caseData.id} 
                       to={`/cases/${caseData.id}`}
-                      className="block p-3 bg-secondary/30 hover:bg-secondary/50 transition-colors"
+                      className="block p-2.5 bg-secondary/30 hover:bg-secondary/50 transition-colors"
                     >
                       <div className="flex items-start gap-3">
                         <Clock className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
@@ -152,9 +149,9 @@ const HomePage = () => {
 
             {/* Need More Help */}
             <Card className="border-2 border-primary/30 bg-primary/5">
-              <CardContent className="p-5 text-center">
+              <CardContent className="p-4 text-center">
                 <h3 className="font-semibold text-foreground mb-2">Can't find what you need?</h3>
-                <p className="text-sm text-muted-foreground mb-4">
+                <p className="text-sm text-muted-foreground mb-3">
                   Our support team is here to help with any questions.
                 </p>
                 <Button asChild className="w-full">
