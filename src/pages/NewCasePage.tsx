@@ -17,7 +17,7 @@ import {
   Urgency
 } from '@/lib/types';
 import { mockKnowledgeArticles, mockEvents, currentUser } from '@/lib/mockData';
-import { useMarket } from '@/contexts/MarketContext';
+import { useLocale } from '@/contexts/LocaleContext';
 import { AlertTriangle, Upload, X, CheckCircle2, Calendar } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
@@ -25,7 +25,7 @@ import { format } from 'date-fns';
 const NewCasePage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { market, marketLabel } = useMarket();
+  const { market, locale } = useLocale();
   
   const [category, setCategory] = useState<RequestCategory | ''>('');
   const [subCategory, setSubCategory] = useState('');
@@ -192,7 +192,7 @@ const NewCasePage = () => {
                   <div className="space-y-2">
                     <Label>Market / Country</Label>
                     <div className="p-3 bg-secondary border-2 border-border text-sm">
-                      {marketLabel}
+                      {locale.flag} {locale.label}
                       <span className="text-xs text-muted-foreground ml-2">
                         (Change in header)
                       </span>

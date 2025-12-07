@@ -4,13 +4,13 @@ import { TaskTile } from '@/components/home/TaskTile';
 import { FeaturedContent } from '@/components/home/FeaturedContent';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { taskTiles, mockKnowledgeArticles, mockCases } from '@/lib/mockData';
-import { useMarket } from '@/contexts/MarketContext';
+import { taskTiles, mockKnowledgeArticles, mockCases, currentUser } from '@/lib/mockData';
+import { useLocale } from '@/contexts/LocaleContext';
 import { Link } from 'react-router-dom';
 import { FileText, Clock, AlertTriangle } from 'lucide-react';
 
 const HomePage = () => {
-  const { marketLabel } = useMarket();
+  const { locale, t } = useLocale();
   
   // Get user's open cases count
   const openCases = mockCases.filter(c => 
@@ -49,7 +49,7 @@ const HomePage = () => {
           <div className="lg:col-span-2">
             <FeaturedContent 
               articles={mockKnowledgeArticles.slice(0, 4)} 
-              title={`Recommended for ${marketLabel}`}
+              title={`Recommended for ${locale.label}`}
             />
           </div>
 
