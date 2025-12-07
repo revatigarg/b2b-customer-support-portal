@@ -24,10 +24,9 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 interface FeaturedTasksProps {
   persona?: TaskGroup['persona'];
-  userName?: string;
 }
 
-export function FeaturedTasks({ persona = 'event-organizer', userName = 'Rachel' }: FeaturedTasksProps) {
+export function FeaturedTasks({ persona = 'event-organizer' }: FeaturedTasksProps) {
   const { t } = useLocale();
   
   // Filter tasks by persona
@@ -37,7 +36,7 @@ export function FeaturedTasks({ persona = 'event-organizer', userName = 'Rachel'
     <div className="w-full bg-background py-12">
       <div className="text-center mb-10">
         <h2 className="text-2xl md:text-3xl font-bold text-foreground">
-          Featured Tasks for {userName}
+          Featured Tasks for You
         </h2>
         <p className="text-muted-foreground mt-2">
           Quick access to common workflows for Event Organizers
