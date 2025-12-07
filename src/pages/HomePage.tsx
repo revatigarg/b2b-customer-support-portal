@@ -1,4 +1,4 @@
-import { MainLayout } from '@/components/layout/MainLayout';
+import { TopNav } from '@/components/layout/TopNav';
 import { HeroSearch } from '@/components/home/HeroSearch';
 import { FeaturedTasks } from '@/components/home/FeaturedTasks';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,19 +18,17 @@ const HomePage = () => {
   const criticalCases = openCases.filter(c => c.urgency === 'critical');
 
   return (
-    <MainLayout showSearch={false}>
+    <div className="min-h-screen bg-background">
+      <TopNav />
+      
       {/* Full-width Hero Search Section */}
-      <div className="-m-6 mb-6">
-        <HeroSearch />
-      </div>
+      <HeroSearch />
 
       {/* Full-width Featured Tasks Section */}
-      <div className="-mx-6 mb-6">
-        <FeaturedTasks persona="event-organizer" />
-      </div>
+      <FeaturedTasks persona="event-organizer" />
 
-      <div className="max-w-6xl mx-auto space-y-6">
-
+      {/* Contained Widgets Section */}
+      <div className="max-w-5xl mx-auto px-6 py-8">
         {/* Widgets Row - 3 columns */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Your Cases */}
@@ -127,7 +125,7 @@ const HomePage = () => {
       </div>
 
       {/* Full-width Need Help Section */}
-      <div className="-mx-6 mt-6 py-16 bg-secondary/30 border-t border-border">
+      <div className="w-full py-16 bg-secondary/30 border-t border-border">
         <div className="text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">
             {t('cantFindWhatYouNeed')}
@@ -137,7 +135,7 @@ const HomePage = () => {
           </Button>
         </div>
       </div>
-    </MainLayout>
+    </div>
   );
 };
 
