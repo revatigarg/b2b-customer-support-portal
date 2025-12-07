@@ -11,9 +11,6 @@ export function MainLayout({ children, title, showSearch = true }: MainLayoutPro
     <div className="min-h-screen bg-background">
       <TopNav />
       <main className="p-6">
-        {title && (
-          <h1 className="text-2xl font-semibold text-foreground mb-6">{title}</h1>
-        )}
         {children}
       </main>
     </div>
