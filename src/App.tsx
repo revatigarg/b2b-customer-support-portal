@@ -14,26 +14,28 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <LocaleProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/cases" element={<CasesPage />} />
-            <Route path="/cases/new" element={<NewCasePage />} />
-            <Route path="/cases/:id" element={<CaseDetailPage />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/knowledge" element={<KnowledgeBasePage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </LocaleProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <LocaleProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/cases" element={<CasesPage />} />
+              <Route path="/cases/new" element={<NewCasePage />} />
+              <Route path="/cases/:id" element={<CaseDetailPage />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/knowledge" element={<KnowledgeBasePage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </LocaleProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}
 
 export default App;
