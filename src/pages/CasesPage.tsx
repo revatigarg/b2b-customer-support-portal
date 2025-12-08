@@ -173,10 +173,8 @@ const CasesPage = () => {
       {/* Page Title and CTA */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold text-foreground">My Cases</h1>
-        <Button asChild className="gap-2 bg-foreground text-background hover:bg-foreground/90">
-          <Link to="/cases/new">+ New Case<Plus className="h-4 w-4" />
-            + New Case
-          </Link>
+        <Button asChild className="bg-foreground text-background hover:bg-foreground/90">
+          <Link to="/cases/new">+ New Case</Link>
         </Button>
       </div>
 
