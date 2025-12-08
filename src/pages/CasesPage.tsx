@@ -122,7 +122,7 @@ const CasesPage = () => {
     { value: 'in-progress', label: 'In Progress', color: 'bg-sky-500' },
     { value: 'pending', label: 'Pending', color: 'bg-blue-600' },
     { value: 'resolved', label: 'Resolved', color: 'bg-emerald-500' },
-    { value: 'closed', label: 'Closed', color: 'bg-rose-500' },
+    { value: 'closed', label: 'Closed', color: 'bg-gray-400' },
   ];
 
   return (
