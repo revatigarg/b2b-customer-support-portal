@@ -130,18 +130,17 @@ const CasesPage = () => {
     setSourceFilter('all');
   };
 
-  // Status counts for tabs
+  // Status counts - always show true totals across all cases
   const statusCounts = useMemo(() => {
-    const baseCases = activeTab === 'active' ? mockCases.filter(c => c.status !== 'resolved' && c.status !== 'closed') : mockCases.filter(c => c.status === 'resolved' || c.status === 'closed');
     return {
-      all: baseCases.length,
-      open: baseCases.filter(c => c.status === 'open').length,
-      'in-progress': baseCases.filter(c => c.status === 'in-progress').length,
-      pending: baseCases.filter(c => c.status === 'pending').length,
-      resolved: baseCases.filter(c => c.status === 'resolved').length,
-      closed: baseCases.filter(c => c.status === 'closed').length
+      all: mockCases.length,
+      open: mockCases.filter(c => c.status === 'open').length,
+      'in-progress': mockCases.filter(c => c.status === 'in-progress').length,
+      pending: mockCases.filter(c => c.status === 'pending').length,
+      resolved: mockCases.filter(c => c.status === 'resolved').length,
+      closed: mockCases.filter(c => c.status === 'closed').length
     };
-  }, [activeTab]);
+  }, []);
   const activeCasesCount = mockCases.filter(c => c.status !== 'resolved' && c.status !== 'closed').length;
   const resolvedCasesCount = mockCases.filter(c => c.status === 'resolved' || c.status === 'closed').length;
   const statusTabs = [{
