@@ -137,9 +137,9 @@ export const mockCases: Case[] = [
     attachments: [],
     status: 'in-progress',
     assignedQueue: 'Event-Day Ops',
-    createdAt: new Date('2024-03-15T10:30:00'),
-    updatedAt: new Date('2024-03-15T11:45:00'),
-    slaDeadline: new Date('2024-03-15T11:30:00'),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    slaDeadline: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours overdue
     comments: [
       {
         id: 'c1',
@@ -171,9 +171,9 @@ export const mockCases: Case[] = [
     attachments: [],
     status: 'open',
     assignedQueue: 'Settlement Team',
-    createdAt: new Date('2024-02-14T09:00:00'),
-    updatedAt: new Date('2024-02-14T09:00:00'),
-    slaDeadline: new Date('2024-02-16T09:00:00'),
+    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+    updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+    slaDeadline: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours remaining
     comments: [],
     contactName: 'Marcus Chen',
     contactEmail: 'marcus.chen@touringprod.com',
@@ -197,9 +197,9 @@ export const mockCases: Case[] = [
     attachments: [],
     status: 'pending',
     assignedQueue: 'Technical Support',
-    createdAt: new Date('2024-03-13T14:20:00'),
-    updatedAt: new Date('2024-03-14T08:30:00'),
-    slaDeadline: new Date('2024-03-14T18:20:00'),
+    createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
+    updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    slaDeadline: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours remaining
     comments: [
       {
         id: 'c2',
