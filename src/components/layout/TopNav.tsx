@@ -192,14 +192,16 @@ export function TopNav() {
             {/* Separator */}
             <div className="hidden md:block h-4 w-px bg-white/30" />
 
-            {/* Get Support - Highlighted */}
+            {/* Get Support - Badge Style like PayPal */}
             <Link 
               to="/cases/new" 
-              className="flex items-center gap-2 text-sm font-semibold hover:opacity-80 transition-opacity"
+              className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded transition-colors"
             >
-              <span className="text-primary bg-white px-2 py-0.5 rounded text-xs font-bold">
-                {t('getSupport')}
-              </span>
+              <span className="text-primary font-bold text-sm">TM</span>
+              <div className="border-l border-zinc-600 pl-2">
+                <span className="text-[10px] text-zinc-400 block leading-tight">Partner</span>
+                <span className="text-xs text-white font-medium leading-tight">Support</span>
+              </div>
             </Link>
           </div>
         </div>
