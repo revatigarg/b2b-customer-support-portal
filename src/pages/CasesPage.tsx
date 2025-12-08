@@ -97,13 +97,49 @@ const CasesPage = () => {
     setSourceFilter('all');
   };
 
+  // Status counts for tabs
+  const statusCounts = useMemo(() => {
+    const baseCases = activeTab === 'active' 
+      ? mockCases.filter(c => c.status !== 'resolved' && c.status !== 'closed')
+      : mockCases.filter(c => c.status === 'resolved' || c.status === 'closed');
+    
+    return {
+      all: baseCases.length,
+      open: baseCases.filter(c => c.status === 'open').length,
+      'in-progress': baseCases.filter(c => c.status === 'in-progress').length,
+      pending: baseCases.filter(c => c.status === 'pending').length,
+      resolved: baseCases.filter(c => c.status === 'resolved').length,
+      closed: baseCases.filter(c => c.status === 'closed').length,
+    };
+  }, [activeTab]);
+
   const activeCasesCount = mockCases.filter(c => c.status !== 'resolved' && c.status !== 'closed').length;
   const resolvedCasesCount = mockCases.filter(c => c.status === 'resolved' || c.status === 'closed').length;
 
+  const statusTabs = [
+    { value: 'all', label: 'All', color: 'bg-foreground' },
+    { value: 'open', label: 'Open', color: 'bg-amber-500' },
+    { value: 'in-progress', label: 'In Progress', color: 'bg-sky-500' },
+    { value: 'pending', label: 'Pending', color: 'bg-blue-600' },
+    { value: 'resolved', label: 'Resolved', color: 'bg-emerald-500' },
+    { value: 'closed', label: 'Closed', color: 'bg-rose-500' },
+  ];
+
   return (
     <MainLayout title={t('myCases')} showSearch={false}>
-      {/* Tabs for Active/Resolved */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      {/* Page Title and CTA */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-semibold text-foreground">My Cases</h1>
+        <Button asChild className="gap-2 bg-foreground text-background hover:bg-foreground/90">
+          <Link to="/cases/new">
+            <Plus className="h-4 w-4" />
+            + New Case
+          </Link>
+        </Button>
+      </div>
+
+      {/* Active/Resolved Tabs */}
+      <div className="flex items-center gap-4 mb-4">
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'active' | 'resolved')}>
           <TabsList>
             <TabsTrigger value="active" className="gap-2">
@@ -120,13 +156,31 @@ const CasesPage = () => {
             </TabsTrigger>
           </TabsList>
         </Tabs>
+      </div>
 
-        <Button asChild className="gap-2">
-          <Link to="/cases/new">
-            <Plus className="h-4 w-4" />
-            {t('newRequest')}
-          </Link>
-        </Button>
+      {/* Status Filter Tabs with Dots */}
+      <div className="flex flex-wrap items-center gap-1 mb-6 border-b border-border pb-4">
+        {statusTabs.map((tab) => {
+          const count = statusCounts[tab.value as keyof typeof statusCounts] || 0;
+          const isActive = statusFilter === tab.value;
+          return (
+            <button
+              key={tab.value}
+              onClick={() => setStatusFilter(tab.value as CaseStatus | 'all')}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-colors ${
+                isActive 
+                  ? 'bg-muted font-medium text-foreground' 
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+              }`}
+            >
+              {tab.value !== 'all' && (
+                <span className={`w-2 h-2 rounded-full ${tab.color}`} />
+              )}
+              <span>{tab.label}</span>
+              <span className="text-muted-foreground">({count})</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Search Bar */}
@@ -144,19 +198,6 @@ const CasesPage = () => {
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-6">
         <Filter className="h-4 w-4 text-muted-foreground" />
-        
-        <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as CaseStatus | 'all')}>
-          <SelectTrigger className="w-40 border-2 bg-card">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            {STATUS_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
 
         <Select value={urgencyFilter} onValueChange={(v) => setUrgencyFilter(v as Urgency | 'all')}>
           <SelectTrigger className="w-40 border-2 bg-card">
@@ -228,8 +269,8 @@ const CasesPage = () => {
                 : 'No resolved cases matching your criteria.'}
             </p>
             {activeTab === 'active' && (
-              <Button asChild>
-                <Link to="/cases/new">{t('newRequest')}</Link>
+              <Button asChild className="bg-foreground text-background hover:bg-foreground/90">
+                <Link to="/cases/new">+ New Case</Link>
               </Button>
             )}
           </div>
