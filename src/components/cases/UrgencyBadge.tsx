@@ -12,22 +12,22 @@ const urgencyConfig = {
   critical: {
     label: 'Critical',
     icon: AlertTriangle,
-    className: 'bg-critical text-critical-foreground',
+    className: 'bg-destructive/10 text-destructive border border-destructive/20',
   },
   high: {
     label: 'High',
     icon: AlertCircle,
-    className: 'bg-high text-high-foreground',
+    className: 'bg-secondary text-foreground border border-border',
   },
   normal: {
     label: 'Normal',
     icon: Info,
-    className: 'bg-normal text-normal-foreground',
+    className: 'bg-secondary text-muted-foreground border border-border',
   },
   low: {
     label: 'Low',
     icon: CheckCircle,
-    className: 'bg-low text-low-foreground',
+    className: 'bg-secondary text-muted-foreground border border-border',
   },
 };
 
