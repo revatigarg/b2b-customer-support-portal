@@ -4,7 +4,7 @@ import { CaseCard } from '@/components/cases/CaseCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { mockCases } from '@/lib/mockData';
 import { CaseStatus, Urgency, CATEGORY_OPTIONS, CaseSource } from '@/lib/types';
 import { Link } from 'react-router-dom';
@@ -82,14 +82,13 @@ const CasesPage = () => {
   const [urgencyFilter, setUrgencyFilter] = useState<Urgency | 'all'>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [sourceFilter, setSourceFilter] = useState<CaseSource | 'all'>('all');
-  const [activeTab, setActiveTab] = useState<'active' | 'resolved'>('active');
   const filteredCases = useMemo(() => {
     return mockCases.filter(caseData => {
-      // Tab filter (active vs resolved)
-      if (activeTab === 'active') {
-        if (caseData.status === 'resolved' || caseData.status === 'closed') return false;
-      } else {
-        if (caseData.status !== 'resolved' && caseData.status !== 'closed') return false;
+      // Search filter
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        const matchesSearch = caseData.caseNumber.toLowerCase().includes(query) || caseData.description.toLowerCase().includes(query) || caseData.company.toLowerCase().includes(query);
+        if (!matchesSearch) return false;
       }
 
       // Search filter
@@ -120,7 +119,7 @@ const CasesPage = () => {
       }
       return true;
     }).sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-  }, [searchQuery, statusFilter, urgencyFilter, categoryFilter, sourceFilter, activeTab]);
+  }, [searchQuery, statusFilter, urgencyFilter, categoryFilter, sourceFilter]);
   const hasActiveFilters = statusFilter !== 'all' || urgencyFilter !== 'all' || categoryFilter !== 'all' || sourceFilter !== 'all' || searchQuery;
   const clearFilters = () => {
     setSearchQuery('');
@@ -141,8 +140,6 @@ const CasesPage = () => {
       closed: mockCases.filter(c => c.status === 'closed').length
     };
   }, []);
-  const activeCasesCount = mockCases.filter(c => c.status !== 'resolved' && c.status !== 'closed').length;
-  const resolvedCasesCount = mockCases.filter(c => c.status === 'resolved' || c.status === 'closed').length;
   const statusTabs = [{
     value: 'all',
     label: 'All',
@@ -175,26 +172,6 @@ const CasesPage = () => {
         <Button asChild className="bg-foreground text-background hover:bg-foreground/90">
           <Link to="/cases/new">+ New Case</Link>
         </Button>
-      </div>
-
-      {/* Active/Resolved Tabs */}
-      <div className="flex items-center gap-4 mb-4">
-        <Tabs value={activeTab} onValueChange={v => setActiveTab(v as 'active' | 'resolved')}>
-          <TabsList>
-            <TabsTrigger value="active" className="gap-2">
-              Active
-              <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-xs font-medium">
-                {activeCasesCount}
-              </span>
-            </TabsTrigger>
-            <TabsTrigger value="resolved" className="gap-2">
-              Resolved
-              <span className="bg-muted text-muted-foreground px-2 py-0.5 rounded-full text-xs font-medium">
-                {resolvedCasesCount}
-              </span>
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
       </div>
 
       {/* Status Filter Tabs with Dots */}
@@ -265,18 +242,18 @@ const CasesPage = () => {
 
       {/* Results Count */}
       <p className="text-sm text-muted-foreground mb-4">
-        Showing {filteredCases.length} {activeTab === 'active' ? 'active' : 'resolved'} case{filteredCases.length !== 1 ? 's' : ''}
+        Showing {filteredCases.length} case{filteredCases.length !== 1 ? 's' : ''}
       </p>
 
       {/* Cases List */}
       <div className="bg-card border border-border rounded-lg overflow-hidden divide-y divide-border">
         {filteredCases.length > 0 ? filteredCases.map(caseData => <CaseCard key={caseData.id} caseData={caseData} />) : <div className="text-center py-12 border-2 border-dashed border-border bg-card">
             <p className="text-muted-foreground mb-4">
-              {activeTab === 'active' ? 'No active cases. Great work!' : 'No resolved cases matching your criteria.'}
+              No cases matching your criteria.
             </p>
-            {activeTab === 'active' && <Button asChild className="bg-foreground text-background hover:bg-foreground/90">
-                <Link to="/cases/new">+ New Case</Link>
-              </Button>}
+            <Button asChild className="bg-foreground text-background hover:bg-foreground/90">
+              <Link to="/cases/new">+ New Case</Link>
+            </Button>
           </div>}
       </div>
     </MainLayout>;
