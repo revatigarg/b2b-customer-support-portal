@@ -4,7 +4,6 @@ import { UrgencyBadge } from './UrgencyBadge';
 import { StatusBadge } from './StatusBadge';
 import { ChevronRight, Mail, Phone, Globe } from 'lucide-react';
 import { useLocale } from '@/contexts/LocaleContext';
-import { Button } from '@/components/ui/button';
 
 interface CaseCardProps {
   caseData: Case;
@@ -66,12 +65,9 @@ export function CaseCard({ caseData }: CaseCardProps) {
           </div>
         </div>
 
-        {/* Action button */}
+        {/* Arrow indicator */}
         <div className="flex-shrink-0">
-          <Button variant="default" size="sm" className="gap-1">
-            View Case
-            <ChevronRight className="h-4 w-4" />
-          </Button>
+          <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
         </div>
       </div>
     </Link>
