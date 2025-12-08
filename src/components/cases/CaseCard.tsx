@@ -47,7 +47,7 @@ export function CaseCard({ caseData }: CaseCardProps) {
         {/* Main content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-            <span className="font-mono">{caseData.caseNumber}</span>
+            <span>{caseData.caseNumber}</span>
             <span>•</span>
             <span className="inline-flex items-center gap-1">
               {sourceInfo.icon}
