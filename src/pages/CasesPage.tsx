@@ -144,8 +144,7 @@ const CasesPage = () => {
   }, [activeTab]);
   const activeCasesCount = mockCases.filter(c => c.status !== 'resolved' && c.status !== 'closed').length;
   const resolvedCasesCount = mockCases.filter(c => c.status === 'resolved' || c.status === 'closed').length;
-  // Status tabs - different for active vs resolved
-  const activeStatusTabs = [{
+  const statusTabs = [{
     value: 'all',
     label: 'All',
     color: 'bg-foreground'
@@ -161,12 +160,6 @@ const CasesPage = () => {
     value: 'pending',
     label: 'Pending',
     color: 'bg-blue-600'
-  }];
-
-  const resolvedStatusTabs = [{
-    value: 'all',
-    label: 'All',
-    color: 'bg-foreground'
   }, {
     value: 'resolved',
     label: 'Resolved',
@@ -176,15 +169,6 @@ const CasesPage = () => {
     label: 'Closed',
     color: 'bg-gray-400'
   }];
-
-  const statusTabs = activeTab === 'active' ? activeStatusTabs : resolvedStatusTabs;
-
-  // Reset status filter when switching tabs if the current filter isn't valid for the new tab
-  const handleTabChange = (newTab: 'active' | 'resolved') => {
-    setActiveTab(newTab);
-    // Reset status filter to 'all' when switching tabs
-    setStatusFilter('all');
-  };
   return <MainLayout title={t('myCases')} showSearch={false}>
       {/* Page Title and CTA */}
       <div className="flex items-center justify-between mb-6">
@@ -196,7 +180,7 @@ const CasesPage = () => {
 
       {/* Active/Resolved Tabs */}
       <div className="flex items-center gap-4 mb-4">
-        <Tabs value={activeTab} onValueChange={v => handleTabChange(v as 'active' | 'resolved')}>
+        <Tabs value={activeTab} onValueChange={v => setActiveTab(v as 'active' | 'resolved')}>
           <TabsList>
             <TabsTrigger value="active" className="gap-2">
               Active
