@@ -51,11 +51,17 @@ const CaseDetailPage = () => {
 
   return (
     <MainLayout title={caseData.caseNumber} showSearch={false}>
-      {/* Back Button */}
-      <Button variant="ghost" onClick={() => navigate('/cases')} className="mb-4 -ml-2 gap-2">
-        <ArrowLeft className="h-4 w-4" />
-        Back to Cases
-      </Button>
+      {/* Page Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" onClick={() => navigate('/cases')} className="-ml-2 gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Cases
+          </Button>
+        </div>
+      </div>
+
+      <h1 className="text-2xl font-semibold text-foreground mb-6">{caseData.caseNumber}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
