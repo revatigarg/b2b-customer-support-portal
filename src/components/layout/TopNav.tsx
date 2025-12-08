@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useLocale } from '@/contexts/LocaleContext';
 import { ChevronDown, ChevronUp, Check, MessageSquare, ArrowLeft, User, Search } from 'lucide-react';
@@ -11,6 +11,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { MARKET_CONFIGS, MarketCode, LanguageCode } from '@/lib/locale';
 import { currentUser } from '@/lib/mockData';
@@ -23,10 +24,29 @@ const quickLinks = [
 
 export function TopNav() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { market, setMarket, language, setLanguage, locale, t } = useLocale();
   const [isOpen, setIsOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [countriesExpanded, setCountriesExpanded] = useState(true);
   const [languageExpanded, setLanguageExpanded] = useState(true);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+      setSearchOpen(false);
+      setSearchQuery('');
+    }
+  };
+
+  const quickSearches = [
+    'Scanner troubleshooting',
+    'Presale setup',
+    'Settlement reports',
+    'API documentation',
+  ];
 
   const navigation = [
     { name: t('home'), href: '/' },
@@ -240,10 +260,53 @@ export function TopNav() {
 
           {/* Right: Search + User Login */}
           <div className="flex items-center gap-4">
-            {/* Search Icon */}
-            <button className="flex items-center gap-2 text-primary-foreground hover:opacity-80 transition-opacity">
-              <Search className="h-5 w-5" />
-            </button>
+            {/* Search Dialog */}
+            <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
+              <DialogTrigger asChild>
+                <button className="flex items-center gap-2 text-primary-foreground hover:opacity-80 transition-opacity">
+                  <Search className="h-5 w-5" />
+                </button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-2xl bg-background">
+                <DialogHeader>
+                  <DialogTitle>Search</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleSearch} className="space-y-4">
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      type="search"
+                      placeholder="Search for guides, troubleshooting, API docs..."
+                      className="pl-12 pr-4 h-12 text-lg border-2 border-border"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      autoFocus
+                    />
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="text-sm text-muted-foreground">Quick searches:</span>
+                    {quickSearches.map((term) => (
+                      <button
+                        key={term}
+                        type="button"
+                        onClick={() => {
+                          navigate(`/search?q=${encodeURIComponent(term)}`);
+                          setSearchOpen(false);
+                        }}
+                        className="px-3 py-1 text-sm font-medium text-foreground bg-muted hover:bg-muted/80 rounded-full transition-colors"
+                      >
+                        {term}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex justify-end">
+                    <Button type="submit" disabled={!searchQuery.trim()}>
+                      Search
+                    </Button>
+                  </div>
+                </form>
+              </DialogContent>
+            </Dialog>
 
             {/* User Login */}
             <Button 
