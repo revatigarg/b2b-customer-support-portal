@@ -215,7 +215,7 @@ const CasesPage = () => {
       </p>
 
       {/* Cases List */}
-      <div className="space-y-3">
+      <div className="bg-card border border-border rounded-lg overflow-hidden divide-y divide-border">
         {filteredCases.length > 0 ? (
           filteredCases.map((caseData) => (
             <CaseCard key={caseData.id} caseData={caseData} />
