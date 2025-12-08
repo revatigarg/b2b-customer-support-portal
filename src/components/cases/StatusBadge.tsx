@@ -9,23 +9,23 @@ interface StatusBadgeProps {
 const statusConfig: Record<CaseStatus, { label: string; className: string }> = {
   'open': {
     label: 'Open',
-    className: 'bg-secondary text-foreground border border-border',
+    className: 'bg-amber-500/10 text-amber-600 border border-amber-500/20',
   },
   'in-progress': {
     label: 'In Progress',
-    className: 'bg-primary/10 text-primary border border-primary/20',
+    className: 'bg-sky-500/10 text-sky-600 border border-sky-500/20',
   },
   'pending': {
     label: 'Pending',
-    className: 'bg-secondary text-muted-foreground border border-border',
+    className: 'bg-blue-600/10 text-blue-600 border border-blue-600/20',
   },
   'resolved': {
     label: 'Resolved',
-    className: 'bg-secondary text-muted-foreground border border-border',
+    className: 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20',
   },
   'closed': {
     label: 'Closed',
-    className: 'bg-muted text-muted-foreground border border-border',
+    className: 'bg-gray-400/10 text-gray-500 border border-gray-400/20',
   },
 };
 
