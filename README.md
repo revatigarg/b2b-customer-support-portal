@@ -1,45 +1,50 @@
-# B2B Self-Serve Customer Support Portal
+# Commerce Operations Support Prototype
 
-## Live Demo
+Live Demo:
 https://partnerecportal.lovable.app
 
+---
+
 ## Overview
-A structured customer support portal designed to streamline ticket intake, categorize support requests, and improve self-service resolution for B2B users.
 
-## Objective
-Reduce manual support handling and create a standardized intake system with defined routing logic and knowledge base support.
+This project explores how structured support workflows can reduce merchant friction in eCommerce platforms.
 
-## Core Capabilities
-- Structured ticket submission flows
-- Categorized support routing
-- Knowledge base / FAQ organization
-- Email notification integration
-- Escalation logic mapping
-- Role-based access handling
+Built using Lovable for rapid prototyping and version-controlled through GitHub to simulate real product iteration workflows.
 
-## System Architecture
-- Frontend: Lovable platform
-- Workflow design: Custom structured routing logic
-- Notifications: SMTP email integration
-- Version control: GitHub
-- Analytics: (Add if using GA or similar)
+The goal is not to build a production support system, but to model how commerce issue intake, categorization, and escalation logic can be designed intentionally.
 
-## Product Thinking
-This portal was designed with:
-- Self-service deflection principles
-- Clear categorization to reduce ambiguity
-- Escalation pathways for complex cases
-- Iterative workflow refinement
+---
 
-## Future Improvements
-- Add role-based dashboards
-- Implement ticket status tracking
-- Integrate CRM automation
-- Add analytics for resolution rate tracking
+## Problem Context
 
-## My Role
-- Designed workflow architecture
-- Structured support taxonomy
-- Defined escalation paths
-- Iterated on UX clarity
-- Managed version control via GitHub
+In commerce platforms, unclear issue categorization increases:
+
+- Resolution time
+- Merchant frustration
+- Support costs
+- Escalation complexity
+
+Free-text tickets and ambiguous routing create operational inefficiencies, especially at scale.
+
+This prototype explores how structured workflows can improve clarity and reduce back-and-forth.
+
+---
+
+## What This Prototype Models
+
+### 1. Structured Issue Intake
+
+Categorized merchant issue flows across commerce lifecycle areas:
+
+- Checkout and payment issues
+- Order fulfillment concerns
+- Refund and return workflows
+- Inventory discrepancies
+- Platform or app-related problems
+
+### 2. Routing and Escalation Logic
+
+- Defined intake categories
+- Clear escalation pathways
+- Intentional separation of issue types
+- Reduced
