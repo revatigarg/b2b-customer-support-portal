@@ -1,4 +1,4 @@
-# B2B Self-Serve Customer Support Portal
+# B2B Commerce Operations & Support Prototype
 
 ## Live Demo
 https://partnerecportal.lovable.app
